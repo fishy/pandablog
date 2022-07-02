@@ -12,6 +12,9 @@
 # Load the environment variables.
 include .env
 
+gcloud=gcloud --project=$(PBB_GCP_PROJECT_ID)
+docker_image=$(PBB_GCP_REGION)-docker.pkg.dev/$(PBB_GCP_PROJECT_ID)/${PBB_GCP_IMAGE_NAME}/${PBB_GCP_IMAGE_NAME}
+
 .PHONY: default
 default: gcp-push
 
@@ -26,12 +29,17 @@ gcp-init:
 	gsutil versioning set on gs://${PBB_GCP_BUCKET_NAME}
 	gsutil cp testdata/empty.json gs://${PBB_GCP_BUCKET_NAME}/storage/site.json
 	gsutil cp testdata/empty.bin gs://${PBB_GCP_BUCKET_NAME}/storage/session.bin
+	@echo Creating Artifact Registry repository on GCP
+	$(gcloud) services enable artifactregistry.googleapis.com cloudbuild.googleapis.com
+	$(gcloud) artifacts repositories create $(PBB_GCP_IMAGE_NAME) \
+		--repository-format=docker \
+		--location=$(PBB_GCP_REGION)
 
 .PHONY: gcp-push
 gcp-push:
 	@echo Pushing to Google Cloud Run.
-	gcloud --project=$(PBB_GCP_PROJECT_ID) builds submit --tag gcr.io/$(PBB_GCP_PROJECT_ID)/${PBB_GCP_IMAGE_NAME}
-	gcloud --project=$(PBB_GCP_PROJECT_ID) run deploy --image gcr.io/$(PBB_GCP_PROJECT_ID)/${PBB_GCP_IMAGE_NAME} \
+	$(gcloud) builds submit --tag $(docker_image)
+	$(gcloud) run deploy --image $(docker_image) \
 		--platform managed \
 		--allow-unauthenticated \
 		--region ${PBB_GCP_REGION} ${PBB_GCP_CLOUDRUN_NAME} \
