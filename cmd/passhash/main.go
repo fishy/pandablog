@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"syscall"
+
+	"golang.org/x/term"
 
 	"github.com/josephspurrier/polarbearblog/app/lib/passhash"
 	"github.com/josephspurrier/polarbearblog/app/lib/timezone"
@@ -18,12 +21,21 @@ func init() {
 }
 
 func main() {
-	if len(os.Args) != 2 {
-		log.Fatalln("Incorrect number of arguments, expected 2, but got:", len(os.Args))
+	var pass string
+	if len(os.Args) >= 2 {
+		pass = os.Args[1]
+	} else {
+		fmt.Print("Please input your desired password: ")
+		p, err := term.ReadPassword(syscall.Stdin)
+		fmt.Println()
+		if err != nil {
+			log.Fatalf("Unable to read password: %v", err)
+		}
+		pass = string(p)
 	}
 
 	// Generate a new private key.
-	s, err := passhash.HashString(os.Args[1])
+	s, err := passhash.HashString(pass)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}

@@ -5,7 +5,7 @@
 # * make gcp-push
 # * make privatekey
 # * make mfa
-# * make passhash passwordhere
+# * make passhash
 # * make local-init
 # * make local-run
 
@@ -60,21 +60,14 @@ privatekey:
 .PHONY: mfa
 mfa:
 	@echo Generating MFA for user.
-	@echo You can paste private key this into your .env file:
+	@echo You can paste this into your .env file:
 	@go run cmd/mfa/main.go
-
-# Save the ARGS.
-# https://stackoverflow.com/a/14061796
-ifeq (passhash,$(firstword $(MAKECMDGOALS)))
-  ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-  $(eval $(ARGS):;@:)
-endif
 
 .PHONY: passhash
 passhash:
 	@echo Generating password hash.
-	@echo You can paste private key this into your .env file:
-	@go run cmd/passhash/main.go ${ARGS}
+	@echo You can paste this into your .env file:
+	@go run cmd/passhash/main.go
 
 .PHONY: local-init
 local-init:

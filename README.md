@@ -18,7 +18,7 @@ You can see an active website using this stack [here](https://www.josephspurrier
 # App Configuration
 ## Session key to encrypt the cookie store. Generate with: make privatekey
 export PBB_SESSION_KEY=
-## Password hash that is base64 encoded. Generate with: make passhash passwordhere
+## Password hash that is base64 encoded. Generate with: make passhash
 export PBB_PASSWORD_HASH=
 ## Username to use to login to the platform at: https://example.run.app/login/admin
 export PBB_USERNAME=admin
