@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-
-	"github.com/josephspurrier/polarbearblog/app/lib/htmltemplate"
 )
 
 // XMLUtil -
@@ -90,12 +88,16 @@ func (c *XMLUtil) rss(w http.ResponseWriter, r *http.Request) (status int, err e
 	// Resource: https://www.rssboard.org/rss-specification
 	// Rsource: https://validator.w3.org/feed/check.cgi
 
+	type Cdata struct {
+		Content string `xml:",cdata"`
+	}
+
 	type Item struct {
 		Title       string `xml:"title"`
 		Link        string `xml:"link"`
 		PubDate     string `xml:"pubDate"`
 		GUID        string `xml:"guid"`
-		Description string `xml:"description"`
+		Description Cdata  `xml:"description"`
 	}
 
 	type AtomLink struct {
@@ -135,13 +137,15 @@ func (c *XMLUtil) rss(w http.ResponseWriter, r *http.Request) (status int, err e
 	}
 
 	for _, v := range c.Storage.Site.PostsAndPages(true) {
-		plaintext := htmltemplate.PlaintextBlurb(v.Post.Content)
+		html := c.Render.SanitizedHTML(v.Post.Content)
 		m.Items = append(m.Items, Item{
-			Title:       v.Title,
-			Link:        c.Storage.Site.SiteURL() + "/" + v.FullURL(),
-			PubDate:     v.Timestamp.Format(time.RFC1123Z),
-			GUID:        c.Storage.Site.SiteURL() + "/" + v.FullURL(),
-			Description: plaintext,
+			Title:   v.Title,
+			Link:    c.Storage.Site.SiteURL() + "/" + v.FullURL(),
+			PubDate: v.Timestamp.Format(time.RFC1123Z),
+			GUID:    c.Storage.Site.SiteURL() + "/" + v.FullURL(),
+			Description: Cdata{
+				Content: string(html),
+			},
 		})
 	}
 

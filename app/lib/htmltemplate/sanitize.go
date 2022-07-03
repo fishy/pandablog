@@ -9,17 +9,22 @@ import (
 	blackfriday "github.com/russross/blackfriday/v2"
 )
 
-// sanitizedContent returns a sanitized content block or an error is one occurs.
-func (te *Engine) sanitizedContent(t *template.Template, content string) (*template.Template, error) {
-	b := []byte(content)
+// SanitizedHTML returns a sanitized content html.
+func (te *Engine) SanitizedHTML(content string) []byte {
 	// Ensure unit line endings are used when pulling out of JSON.
-	markdownWithUnixLineEndings := strings.Replace(string(b), "\r\n", "\n", -1)
+	markdownWithUnixLineEndings := strings.Replace(content, "\r\n", "\n", -1)
 	htmlCode := blackfriday.Run([]byte(markdownWithUnixLineEndings))
 
 	// Sanitize by removing HTML if true.
 	if !te.allowUnsafeHTML {
 		htmlCode = bluemonday.UGCPolicy().SanitizeBytes(htmlCode)
 	}
+	return htmlCode
+}
+
+// sanitizedContent returns a sanitized content block or an error is one occurs.
+func (te *Engine) sanitizedContent(t *template.Template, content string) (*template.Template, error) {
+	htmlCode := te.SanitizedHTML(content)
 
 	// Change delimiters temporarily so code samples can use Go blocks.
 	safeContent := fmt.Sprintf(`[{[{define "content"}]}]%s[{[{end}]}]`, string(htmlCode))
