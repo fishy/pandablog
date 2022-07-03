@@ -9,7 +9,7 @@
             <h2>{{SiteSubtitle}}</h2>
         </a>
         <nav>
-            <a href="/">Home</a>
+            <a href="{{HomeURL}}">Home</a>
             {{if Authenticated}}<a href="/dashboard">Dashboard</a>{{end}}
             {{range $p := PublishedPages}}
             <a href="/{{.URL}}">{{.Title}}</a>

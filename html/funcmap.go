@@ -25,6 +25,12 @@ func FuncMap(r *http.Request, storage *datastorage.Storage,
 	fm["PublishedPages"] = func() []model.Post {
 		return storage.Site.PublishedPages()
 	}
+	fm["HomeURL"] = func() string {
+		if storage.Site.HomeURL != "" {
+			return storage.Site.HomeURL
+		}
+		return "/"
+	}
 	fm["SiteURL"] = func() string {
 		return storage.Site.SiteURL()
 	}

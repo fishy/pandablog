@@ -14,7 +14,10 @@ type Post struct {
 	*Core
 }
 
-func registerPost(c *Post) {
+func registerPost(c *Post, homeURL string) {
+	if homeURL != "" {
+		c.Router.Get("/", c.index)
+	}
 	c.Router.Get("/blog", c.index)
 	c.Router.Get("/:slug", c.show)
 }

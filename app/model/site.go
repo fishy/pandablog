@@ -16,6 +16,7 @@ type Site struct {
 	Footer            string          `json:"footer"`
 	Scheme            string          `json:"scheme"`
 	URL               string          `json:"url"`
+	HomeURL           string          `json:"homeurl"`
 	LoginURL          string          `json:"loginurl"`
 	GoogleAnalyticsID string          `json:"googleanalytics"`
 	DisqusID          string          `json:"disqus"`
