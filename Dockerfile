@@ -1,43 +1,16 @@
-# Use the offical golang image to create a binary.
-# This is based on Debian and sets the GOPATH to /go.
-# https://hub.docker.com/_/golang
-FROM golang:1.18-bullseye as builder
+# Start by building the application.
+FROM golang:1.18 as build
 
-# Create and change to the app directory.
-WORKDIR /app
+WORKDIR /go/src/app
+COPY . .
 
-# Retrieve application dependencies.
-# This allows the container build to reuse cached dependencies.
-# Expecting to copy go.mod and if present go.sum.
-COPY go.* ./
 RUN go mod download
+RUN go vet ./...
+RUN go test ./...
 
-# Copy local code to the container image.
-COPY . ./
+RUN CGO_ENABLED=0 go build -o /go/bin/app
 
-# Build the binary.
-RUN go build -mod=readonly -v -o server
-
-# Use the official Debian slim image for a lean production container.
-# https://hub.docker.com/_/debian
-# https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
-FROM debian:bullseye-slim
-
-ENV DEBIAN_FRONTEND noninteractive
-
-RUN set -x \
-    && apt-get update \
-    && apt-get upgrade -y \
-    && apt-get install -y \
-      ca-certificates \
-      tzdata \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy the binary to the production image from the builder stage.
-COPY --from=builder /app/server /app/server
-
-# Create and change to the app directory.
-WORKDIR /app
-
-# Run the web service on container startup.
-CMD ["/app/server"]
+# Now copy it into our base image.
+FROM gcr.io/distroless/static
+COPY --from=build /go/bin/app /
+CMD ["/app"]
