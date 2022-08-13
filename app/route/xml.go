@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/josephspurrier/polarbearblog/app/model"
 )
 
 // XMLUtil -
@@ -136,7 +138,29 @@ func (c *XMLUtil) rss(w http.ResponseWriter, r *http.Request) (status int, err e
 		},
 	}
 
-	for _, v := range c.Storage.Site.PostsAndPages(true) {
+	allPosts := c.Storage.Site.PostsAndPages(true)
+	var posts []model.PostWithID
+
+	// Determine if there is query.
+	if q := r.URL.Query().Get("q"); len(q) > 0 {
+		for _, v := range allPosts {
+			match := false
+			for _, tag := range v.Tags {
+				if tag.Name == q {
+					match = true
+					break
+				}
+			}
+
+			if match {
+				posts = append(posts, v)
+			}
+		}
+	} else {
+		posts = allPosts
+	}
+
+	for _, v := range posts {
 		html := c.Render.SanitizedHTML(v.Post.Content)
 		m.Items = append(m.Items, Item{
 			Title:   v.Title,

@@ -7,6 +7,7 @@
     {{if StylesAppend}}<link rel="stylesheet" href="{{"/assets/css/style.css" | AssetStamp}}">{{end}}
     {{if EnablePrism}}<link rel="stylesheet" href="{{"/assets/css/prism-vsc-dark-plus.css" | AssetStamp}}">{{end}}
     <link rel="alternate" href="/rss.xml" type="application/rss+xml" title="{{SiteTitle}}">
+    {{if .query}}<link rel="alternate" href="/rss.xml?q={{.query}}" type="application/rss+xml" title="{{SiteTitle}} - #{{.query}}">{{end}}
     <meta name="author" content="{{SiteAuthor}}">
     <meta name="description" content="{{if .metadescription}}{{.metadescription}}{{else}}{{SiteDescription}}{{end}}">
     {{if .canonical}}<link rel="canonical" href="{{.canonical}}" />{{end}}
