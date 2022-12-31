@@ -76,9 +76,8 @@ func (c *AdminPost) store(w http.ResponseWriter, r *http.Request) (status int, e
 	p.Published = r.FormValue("publish") == "on"
 
 	// Save to storage.
-	c.Storage.Site.Posts[ID] = p
-	err = c.Storage.Save()
-	if err != nil {
+	c.Storage.Site.UpdatePost(ID, &p)
+	if err := c.Storage.Save(); err != nil {
 		return http.StatusInternalServerError, err
 	}
 
@@ -95,7 +94,7 @@ func (c *AdminPost) edit(w http.ResponseWriter, r *http.Request) (status int, er
 
 	var p model.Post
 	var ok bool
-	if p, ok = c.Storage.Site.Posts[ID]; !ok {
+	if p, ok = c.Storage.Site.PostByID(ID); !ok {
 		return http.StatusNotFound, nil
 	}
 
@@ -117,7 +116,7 @@ func (c *AdminPost) update(w http.ResponseWriter, r *http.Request) (status int, 
 
 	var p model.Post
 	var ok bool
-	if p, ok = c.Storage.Site.Posts[ID]; !ok {
+	if p, ok = c.Storage.Site.PostByID(ID); !ok {
 		return http.StatusNotFound, nil
 	}
 
@@ -147,7 +146,7 @@ func (c *AdminPost) update(w http.ResponseWriter, r *http.Request) (status int, 
 	p.Page = r.FormValue("is_page") == "on"
 	p.Published = r.FormValue("publish") == "on"
 
-	c.Storage.Site.Posts[ID] = p
+	c.Storage.Site.UpdatePost(ID, &p)
 
 	err = c.Storage.Save()
 	if err != nil {
@@ -162,14 +161,13 @@ func (c *AdminPost) destroy(w http.ResponseWriter, r *http.Request) (status int,
 	ID := way.Param(r.Context(), "id")
 
 	var ok bool
-	if _, ok = c.Storage.Site.Posts[ID]; !ok {
+	if _, ok = c.Storage.Site.PostByID(ID); !ok {
 		return http.StatusNotFound, nil
 	}
 
-	delete(c.Storage.Site.Posts, ID)
+	c.Storage.Site.UpdatePost(ID, nil)
 
-	err = c.Storage.Save()
-	if err != nil {
+	if err := c.Storage.Save(); err != nil {
 		return http.StatusInternalServerError, err
 	}
 
