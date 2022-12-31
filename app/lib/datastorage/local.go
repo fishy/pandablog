@@ -1,7 +1,7 @@
 package datastorage
 
 import (
-	"io/ioutil"
+	"os"
 )
 
 // LocalStorage represents a file on the filesytem.
@@ -18,7 +18,7 @@ func NewLocalStorage(path string) *LocalStorage {
 
 // Load returns a file contents from the filesystem.
 func (s *LocalStorage) Load() ([]byte, error) {
-	b, err := ioutil.ReadFile(s.path)
+	b, err := os.ReadFile(s.path)
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +28,7 @@ func (s *LocalStorage) Load() ([]byte, error) {
 
 // Save writes a file to the filesystem and returns an error if one occurs.
 func (s *LocalStorage) Save(b []byte) error {
-	err := ioutil.WriteFile(s.path, b, 0644)
+	err := os.WriteFile(s.path, b, 0644)
 	if err != nil {
 		return err
 	}

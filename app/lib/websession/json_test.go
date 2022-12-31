@@ -1,7 +1,6 @@
 package websession_test
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 	"time"
@@ -14,7 +13,10 @@ import (
 func TestNewJSONSession(t *testing.T) {
 	// Use local filesytem when developing.
 	f := "data.bin"
-	err := ioutil.WriteFile(f, []byte(""), 0644)
+	t.Cleanup(func() {
+		os.Remove(f)
+	})
+	err := os.WriteFile(f, []byte(""), 0644)
 	assert.NoError(t, err)
 	ss := datastorage.NewLocalStorage(f)
 
@@ -42,6 +44,4 @@ func TestNewJSONSession(t *testing.T) {
 	_, exists, err = store.Find(token)
 	assert.NoError(t, err)
 	assert.False(t, exists)
-
-	os.Remove(f)
 }

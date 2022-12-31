@@ -1,7 +1,7 @@
 package route_test
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -35,7 +35,7 @@ func TestXML(t *testing.T) {
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
 
-	b, err := ioutil.ReadAll(w.Result().Body)
+	b, err := io.ReadAll(w.Result().Body)
 	assert.NoError(t, err)
 	assert.Equal(t, "User-agent: *\nAllow: /", string(b))
 }

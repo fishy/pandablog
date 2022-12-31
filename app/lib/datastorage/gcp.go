@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"io"
-	"io/ioutil"
 	"time"
 
 	"cloud.google.com/go/storage"
@@ -44,7 +43,7 @@ func (s *GCPStorage) Load() ([]byte, error) {
 	}
 	defer rc.Close()
 
-	data, err := ioutil.ReadAll(rc)
+	data, err := io.ReadAll(rc)
 	if err != nil {
 		return nil, err
 	}

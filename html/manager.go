@@ -5,8 +5,8 @@ import (
 	"embed"
 	"fmt"
 	"html/template"
+	"io"
 	"io/fs"
-	"io/ioutil"
 	"net/http"
 	"path"
 	"strings"
@@ -88,7 +88,7 @@ func assetTimePath(s string) string {
 	defer f.Close()
 
 	// Get all the content.s
-	b, err := ioutil.ReadAll(f)
+	b, err := io.ReadAll(f)
 	if err != nil {
 		return s
 	}

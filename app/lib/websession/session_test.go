@@ -1,7 +1,6 @@
 package websession_test
 
 import (
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -18,7 +17,10 @@ import (
 func TestNewSession(t *testing.T) {
 	// Set up the session storage provider.
 	f := "data.bin"
-	err := ioutil.WriteFile(f, []byte(""), 0644)
+	t.Cleanup(func() {
+		os.Remove(f)
+	})
+	err := os.WriteFile(f, []byte(""), 0644)
 	assert.NoError(t, err)
 	ss := datastorage.NewLocalStorage(f)
 	secretkey := "82a18fbbfed2694bb15d512a70c53b1a088e669966918d3d474564b2ac44349b"
@@ -64,6 +66,4 @@ func TestNewSession(t *testing.T) {
 
 	mw := sessionManager.LoadAndSave(mux)
 	mw.ServeHTTP(w, r)
-
-	os.Remove(f)
 }

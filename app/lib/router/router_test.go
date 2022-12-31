@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -83,7 +83,7 @@ func TestPostJSON(t *testing.T) {
 
 	mux.Post("/user", HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) (status int, err error) {
-			b, err := ioutil.ReadAll(r.Body)
+			b, err := io.ReadAll(r.Body)
 			assert.Nil(t, err)
 			r.Body.Close()
 			assert.Equal(t, `{"username":"jsmith"}`, string(b))
