@@ -1,6 +1,7 @@
 package route
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"io/fs"
@@ -34,12 +35,16 @@ func Register(storage *datastorage.Storage, sess *websession.Session, tmpl *html
 	}
 
 	// Register routes.
-	registerHomePost(&HomePost{c}, storage.Site.HomeURL)
+	site, err := storage.Site.Load(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	registerHomePost(&HomePost{c}, site.HomeURL)
 	registerStyles(&Styles{c})
 	registerAuthUtil(&AuthUtil{c})
 	registerXMLUtil(&XMLUtil{c})
 	registerAdminPost(&AdminPost{c})
-	registerPost(&Post{c}, storage.Site.HomeURL)
+	registerPost(&Post{c}, site.HomeURL)
 
 	return c, nil
 }

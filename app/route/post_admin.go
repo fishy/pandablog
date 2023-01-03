@@ -24,9 +24,14 @@ func registerAdminPost(c *AdminPost) {
 }
 
 func (c *AdminPost) index(w http.ResponseWriter, r *http.Request) (status int, err error) {
+	site, err := c.Storage.Site.Load(r.Context())
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
 	vars := make(map[string]interface{})
 	vars["title"] = "Posts"
-	vars["posts"] = c.Storage.Site.PostsAndPages(false)
+	vars["posts"] = site.PostsAndPages(false)
 
 	return c.Render.Template(w, r, "dashboard", "bloglist_edit", vars)
 }
@@ -40,6 +45,11 @@ func (c *AdminPost) create(w http.ResponseWriter, r *http.Request) (status int, 
 }
 
 func (c *AdminPost) store(w http.ResponseWriter, r *http.Request) (status int, err error) {
+	site, err := c.Storage.Site.Load(r.Context())
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
 	ID, err := uuid.Generate()
 	if err != nil {
 		return http.StatusInternalServerError, err
@@ -76,8 +86,8 @@ func (c *AdminPost) store(w http.ResponseWriter, r *http.Request) (status int, e
 	p.Published = r.FormValue("publish") == "on"
 
 	// Save to storage.
-	c.Storage.Site.UpdatePost(ID, &p)
-	if err := c.Storage.Save(); err != nil {
+	site.UpdatePost(ID, &p)
+	if err := c.Storage.Save(site); err != nil {
 		return http.StatusInternalServerError, err
 	}
 
@@ -86,6 +96,11 @@ func (c *AdminPost) store(w http.ResponseWriter, r *http.Request) (status int, e
 }
 
 func (c *AdminPost) edit(w http.ResponseWriter, r *http.Request) (status int, err error) {
+	site, err := c.Storage.Site.Load(r.Context())
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
 	vars := make(map[string]interface{})
 	vars["title"] = "Edit post"
 	vars["token"] = c.Sess.SetCSRF(r)
@@ -94,7 +109,7 @@ func (c *AdminPost) edit(w http.ResponseWriter, r *http.Request) (status int, er
 
 	var p model.Post
 	var ok bool
-	if p, ok = c.Storage.Site.PostByID(ID); !ok {
+	if p, ok = site.PostByID(ID); !ok {
 		return http.StatusNotFound, nil
 	}
 
@@ -112,11 +127,16 @@ func (c *AdminPost) edit(w http.ResponseWriter, r *http.Request) (status int, er
 }
 
 func (c *AdminPost) update(w http.ResponseWriter, r *http.Request) (status int, err error) {
+	site, err := c.Storage.Site.Load(r.Context())
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
 	ID := way.Param(r.Context(), "id")
 
 	var p model.Post
 	var ok bool
-	if p, ok = c.Storage.Site.PostByID(ID); !ok {
+	if p, ok = site.PostByID(ID); !ok {
 		return http.StatusNotFound, nil
 	}
 
@@ -146,10 +166,9 @@ func (c *AdminPost) update(w http.ResponseWriter, r *http.Request) (status int, 
 	p.Page = r.FormValue("is_page") == "on"
 	p.Published = r.FormValue("publish") == "on"
 
-	c.Storage.Site.UpdatePost(ID, &p)
+	site.UpdatePost(ID, &p)
 
-	err = c.Storage.Save()
-	if err != nil {
+	if err := c.Storage.Save(site); err != nil {
 		return http.StatusInternalServerError, err
 	}
 
@@ -158,16 +177,21 @@ func (c *AdminPost) update(w http.ResponseWriter, r *http.Request) (status int, 
 }
 
 func (c *AdminPost) destroy(w http.ResponseWriter, r *http.Request) (status int, err error) {
+	site, err := c.Storage.Site.Load(r.Context())
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
 	ID := way.Param(r.Context(), "id")
 
 	var ok bool
-	if _, ok = c.Storage.Site.PostByID(ID); !ok {
+	if _, ok = site.PostByID(ID); !ok {
 		return http.StatusNotFound, nil
 	}
 
-	c.Storage.Site.UpdatePost(ID, nil)
+	site.UpdatePost(ID, nil)
 
-	if err := c.Storage.Save(); err != nil {
+	if err := c.Storage.Save(site); err != nil {
 		return http.StatusInternalServerError, err
 	}
 

@@ -27,8 +27,13 @@ func registerAuthUtil(c *AuthUtil) {
 
 // login allows a user to login to the dashboard.
 func (c *AuthUtil) login(w http.ResponseWriter, r *http.Request) (status int, err error) {
+	site, err := c.Storage.Site.Load(r.Context())
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
 	slug := way.Param(r.Context(), "slug")
-	if slug != c.Storage.Site.LoginURL {
+	if slug != site.LoginURL {
 		return http.StatusNotFound, nil
 	}
 
@@ -40,8 +45,13 @@ func (c *AuthUtil) login(w http.ResponseWriter, r *http.Request) (status int, er
 }
 
 func (c *AuthUtil) loginPost(w http.ResponseWriter, r *http.Request) (status int, err error) {
+	site, err := c.Storage.Site.Load(r.Context())
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
 	slug := way.Param(r.Context(), "slug")
-	if slug != c.Storage.Site.LoginURL {
+	if slug != site.LoginURL {
 		return http.StatusNotFound, nil
 	}
 

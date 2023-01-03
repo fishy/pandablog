@@ -36,7 +36,10 @@ func NewTemplateManager(storage *datastorage.Storage, sess *websession.Session) 
 // PartialTemplate -
 func (tm *TemplateManager) PartialTemplate(r *http.Request, mainTemplate string, partialTemplate string) (*template.Template, error) {
 	// Functions available in the templates.
-	fm := FuncMap(r, tm.storage, tm.sess)
+	fm, err := FuncMap(r, tm.storage, tm.sess)
+	if err != nil {
+		return nil, err
+	}
 
 	baseTemplate := fmt.Sprintf("%v.tmpl", mainTemplate)
 	headerTemplate := "partial/head.tmpl"
@@ -55,7 +58,10 @@ func (tm *TemplateManager) PartialTemplate(r *http.Request, mainTemplate string,
 // PostTemplate -
 func (tm *TemplateManager) PostTemplate(r *http.Request, mainTemplate string) (*template.Template, error) {
 	// Functions available in the templates.
-	fm := FuncMap(r, tm.storage, tm.sess)
+	fm, err := FuncMap(r, tm.storage, tm.sess)
+	if err != nil {
+		return nil, err
+	}
 
 	baseTemplate := fmt.Sprintf("%v.tmpl", mainTemplate)
 	headerTemplate := "partial/head.tmpl"

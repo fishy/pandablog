@@ -34,6 +34,11 @@ func (c *XMLUtil) sitemap(w http.ResponseWriter, r *http.Request) (status int, e
 	// Resource: https://www.sitemaps.org/protocol.html
 	// Resource: https://golang.org/src/encoding/xml/example_test.go
 
+	site, err := c.Storage.Site.Load(r.Context())
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
 	type URL struct {
 		Location     string `xml:"loc"`
 		LastModified string `xml:"lastmod"`
@@ -53,22 +58,22 @@ func (c *XMLUtil) sitemap(w http.ResponseWriter, r *http.Request) (status int, e
 
 	// Home page
 	m.URL = append(m.URL, URL{
-		Location:     c.Storage.Site.SiteURL(),
-		LastModified: c.Storage.Site.Updated.Format("2006-01-02"),
+		Location:     site.SiteURL(),
+		LastModified: site.Updated.Format("2006-01-02"),
 	})
 
 	// Posts and pages
-	for _, v := range c.Storage.Site.PostsAndPages(true) {
+	for _, v := range site.PostsAndPages(true) {
 		m.URL = append(m.URL, URL{
-			Location:     c.Storage.Site.SiteURL() + "/" + v.FullURL(),
+			Location:     site.SiteURL() + "/" + v.FullURL(),
 			LastModified: v.Timestamp.Format("2006-01-02"),
 		})
 	}
 
 	// Tags
-	for _, v := range c.Storage.Site.Tags(true) {
+	for _, v := range site.Tags(true) {
 		m.URL = append(m.URL, URL{
-			Location:     c.Storage.Site.SiteURL() + "/blog?q=" + v.Name,
+			Location:     site.SiteURL() + "/blog?q=" + v.Name,
 			LastModified: v.Timestamp.Format("2006-01-02"),
 		})
 	}
@@ -89,6 +94,11 @@ func (c *XMLUtil) sitemap(w http.ResponseWriter, r *http.Request) (status int, e
 func (c *XMLUtil) rss(w http.ResponseWriter, r *http.Request) (status int, err error) {
 	// Resource: https://www.rssboard.org/rss-specification
 	// Rsource: https://validator.w3.org/feed/check.cgi
+
+	site, err := c.Storage.Site.Load(r.Context())
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
 
 	type Cdata struct {
 		Content string `xml:",cdata"`
@@ -125,20 +135,20 @@ func (c *XMLUtil) rss(w http.ResponseWriter, r *http.Request) (status int, err e
 	m := &Sitemap{
 		Version:       "2.0",
 		Atom:          "http://www.w3.org/2005/Atom",
-		Title:         c.Storage.Site.SiteTitle(),
-		Link:          c.Storage.Site.SiteURL(),
-		Description:   c.Storage.Site.Description,
+		Title:         site.SiteTitle(),
+		Link:          site.SiteURL(),
+		Description:   site.Description,
 		Generator:     "Polar Bear Blog",
 		Language:      "en-us",
 		LastBuildDate: time.Now().Format(time.RFC1123Z),
 		AtomLink: AtomLink{
-			Href: c.Storage.Site.SiteURL() + "/rss.xml",
+			Href: site.SiteURL() + "/rss.xml",
 			Rel:  "self",
 			Type: "application/rss+xml",
 		},
 	}
 
-	allPosts := c.Storage.Site.PostsAndPages(true)
+	allPosts := site.PostsAndPages(true)
 	var posts []model.PostWithID
 
 	// Determine if there is query.
@@ -164,9 +174,9 @@ func (c *XMLUtil) rss(w http.ResponseWriter, r *http.Request) (status int, err e
 		html := c.Render.SanitizedHTML(v.Post.Content)
 		m.Items = append(m.Items, Item{
 			Title:   v.Title,
-			Link:    c.Storage.Site.SiteURL() + "/" + v.FullURL(),
+			Link:    site.SiteURL() + "/" + v.FullURL(),
 			PubDate: v.Timestamp.Format(time.RFC1123Z),
-			GUID:    c.Storage.Site.SiteURL() + "/" + v.FullURL(),
+			GUID:    site.SiteURL() + "/" + v.FullURL(),
 			Description: Cdata{
 				Content: string(html),
 			},

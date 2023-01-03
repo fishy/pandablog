@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -13,7 +14,6 @@ import (
 	"github.com/josephspurrier/polarbearblog/app/lib/htmltemplate"
 	"github.com/josephspurrier/polarbearblog/app/lib/websession"
 	"github.com/josephspurrier/polarbearblog/app/middleware"
-	"github.com/josephspurrier/polarbearblog/app/model"
 	"github.com/josephspurrier/polarbearblog/app/route"
 	"github.com/josephspurrier/polarbearblog/html"
 )
@@ -59,8 +59,6 @@ func Boot() (http.Handler, error) {
 	}
 
 	// Create new store object with the defaults.
-	site := &model.Site{}
-
 	var ds datastorage.Datastorer
 	var ss websession.Sessionstorer
 
@@ -75,7 +73,7 @@ func Boot() (http.Handler, error) {
 	}
 
 	// Set up the data storage provider.
-	storage, err := datastorage.New(ds, site)
+	storage, err := datastorage.New(ds)
 	if err != nil {
 		return nil, err
 	}
@@ -105,9 +103,13 @@ func Boot() (http.Handler, error) {
 	}
 
 	// Set up the router and middleware.
+	site, err := c.Storage.Site.Load(context.Background())
+	if err != nil {
+		return nil, err
+	}
 	var mw http.Handler
 	mw = c.Router
-	h := middleware.NewHandler(c.Render, c.Sess, c.Router, c.Storage.Site.URL, c.Storage.Site.Scheme)
+	h := middleware.NewHandler(c.Render, c.Sess, c.Router, site.URL, site.Scheme)
 	mw = h.Redirect(mw)
 	mw = middleware.Head(mw)
 	mw = h.DisallowAnon(mw)

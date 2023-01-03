@@ -13,8 +13,16 @@ import (
 )
 
 // FuncMap returns a map of template functions that can be used in templates.
-func FuncMap(r *http.Request, storage *datastorage.Storage,
-	sess *websession.Session) template.FuncMap {
+func FuncMap(
+	r *http.Request,
+	storage *datastorage.Storage,
+	sess *websession.Session,
+) (template.FuncMap, error) {
+	site, err := storage.Site.Load(r.Context())
+	if err != nil {
+		return nil, err
+	}
+
 	fm := make(template.FuncMap)
 	fm["Stamp"] = func(t time.Time) string {
 		return t.Format("2006-01-02")
@@ -23,31 +31,32 @@ func FuncMap(r *http.Request, storage *datastorage.Storage,
 		return t.Format("02 Jan, 2006")
 	}
 	fm["PublishedPages"] = func() []model.Post {
-		return storage.Site.PublishedPages()
+		return site.PublishedPages()
 	}
 	fm["HomeURL"] = func() string {
-		if storage.Site.HomeURL != "" {
-			return storage.Site.HomeURL
+		site := site
+		if site.HomeURL != "" {
+			return site.HomeURL
 		}
 		return "/"
 	}
 	fm["SiteURL"] = func() string {
-		return storage.Site.SiteURL()
+		return site.SiteURL()
 	}
 	fm["SiteTitle"] = func() string {
-		return storage.Site.SiteTitle()
+		return site.SiteTitle()
 	}
 	fm["SiteSubtitle"] = func() string {
-		return storage.Site.SiteSubtitle()
+		return site.SiteSubtitle()
 	}
 	fm["SiteDescription"] = func() string {
-		return storage.Site.Description
+		return site.Description
 	}
 	fm["SiteAuthor"] = func() string {
-		return storage.Site.Author
+		return site.Author
 	}
 	fm["SiteFavicon"] = func() string {
-		return storage.Site.Favicon
+		return site.Favicon
 	}
 	fm["Authenticated"] = func() bool {
 		// If user is not authenticated, don't allow them to access the page.
@@ -58,22 +67,22 @@ func FuncMap(r *http.Request, storage *datastorage.Storage,
 		if envdetect.RunningLocalDev() {
 			return ""
 		}
-		return storage.Site.GoogleAnalyticsID
+		return site.GoogleAnalyticsID
 	}
 	fm["DisqusID"] = func() string {
 		if envdetect.RunningLocalDev() {
 			return ""
 		}
-		return storage.Site.DisqusID
+		return site.DisqusID
 	}
 	fm["CactusSiteName"] = func() string {
 		if envdetect.RunningLocalDev() {
 			return ""
 		}
-		return storage.Site.CactusSiteName
+		return site.CactusSiteName
 	}
 	fm["SiteFooter"] = func() string {
-		return storage.Site.Footer
+		return site.Footer
 	}
 	fm["MFAEnabled"] = func() bool {
 		return len(os.Getenv("PBB_MFA_KEY")) > 0
@@ -82,24 +91,25 @@ func FuncMap(r *http.Request, storage *datastorage.Storage,
 		return assetTimePath(f)
 	}
 	fm["SiteStyles"] = func() template.CSS {
-		return template.CSS(storage.Site.Styles)
+		return template.CSS(site.Styles)
 	}
 	fm["StylesAppend"] = func() bool {
-		if len(storage.Site.Styles) == 0 {
+		site := site
+		if len(site.Styles) == 0 {
 			// If there are no style, then always append.
 			return true
-		} else if storage.Site.StylesAppend {
+		} else if site.StylesAppend {
 			// Else if there are style and it's append, then append.
 			return true
 		}
 		return false
 	}
 	fm["EnableStackEdit"] = func() bool {
-		return storage.Site.StackEdit
+		return site.StackEdit
 	}
 	fm["EnablePrism"] = func() bool {
-		return storage.Site.Prism
+		return site.Prism
 	}
 
-	return fm
+	return fm, nil
 }

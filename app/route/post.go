@@ -23,8 +23,13 @@ func registerPost(c *Post, homeURL string) {
 }
 
 func (c *Post) index(w http.ResponseWriter, r *http.Request) (status int, err error) {
+	site, err := c.Storage.Site.Load(r.Context())
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
 	vars := make(map[string]interface{})
-	vars["tags"] = c.Storage.Site.Tags(true)
+	vars["tags"] = site.Tags(true)
 
 	// Determine if there is query.
 	if q := r.URL.Query().Get("q"); len(q) > 0 {
@@ -33,7 +38,7 @@ func (c *Post) index(w http.ResponseWriter, r *http.Request) (status int, err er
 		delete(vars, "tags")
 
 		posts := make([]model.PostWithID, 0)
-		for _, v := range c.Storage.Site.PostsAndPages(true) {
+		for _, v := range site.PostsAndPages(true) {
 			match := false
 			for _, tag := range v.Tags {
 				if tag.Name == q {
@@ -49,15 +54,20 @@ func (c *Post) index(w http.ResponseWriter, r *http.Request) (status int, err er
 
 		vars["posts"] = posts
 	} else {
-		vars["posts"] = c.Storage.Site.PublishedPosts()
+		vars["posts"] = site.PublishedPosts()
 	}
 
 	return c.Render.Template(w, r, "base", "bloglist_index", vars)
 }
 
 func (c *Post) show(w http.ResponseWriter, r *http.Request) (status int, err error) {
+	site, err := c.Storage.Site.Load(r.Context())
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
 	slug := way.Param(r.Context(), "slug")
-	p := c.Storage.Site.PostBySlug(slug)
+	p := site.PostBySlug(slug)
 
 	// Determine if in preview mode.
 	preview := false

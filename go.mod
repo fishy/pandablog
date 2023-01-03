@@ -11,6 +11,7 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.19
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/stretchr/testify v1.7.0
+	go.yhsif.com/stalecache v0.2.0
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 	jaytaylor.com/html2text v0.0.0-20211105163654-bc68cce691ba

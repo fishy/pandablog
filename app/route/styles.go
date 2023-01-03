@@ -15,19 +15,29 @@ func registerStyles(c *Styles) {
 }
 
 func (c *Styles) edit(w http.ResponseWriter, r *http.Request) (status int, err error) {
+	site, err := c.Storage.Site.Load(r.Context())
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
 	vars := make(map[string]interface{})
 	vars["title"] = "Site styles"
 	vars["token"] = c.Sess.SetCSRF(r)
-	vars["favicon"] = c.Storage.Site.Favicon
-	vars["styles"] = c.Storage.Site.Styles
-	vars["stylesappend"] = c.Storage.Site.StylesAppend
-	vars["stackedit"] = c.Storage.Site.StackEdit
-	vars["prism"] = c.Storage.Site.Prism
+	vars["favicon"] = site.Favicon
+	vars["styles"] = site.Styles
+	vars["stylesappend"] = site.StylesAppend
+	vars["stackedit"] = site.StackEdit
+	vars["prism"] = site.Prism
 
 	return c.Render.Template(w, r, "dashboard", "styles_edit", vars)
 }
 
 func (c *Styles) update(w http.ResponseWriter, r *http.Request) (status int, err error) {
+	site, err := c.Storage.Site.Load(r.Context())
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
 	r.ParseForm()
 
 	// CSRF protection.
@@ -36,14 +46,13 @@ func (c *Styles) update(w http.ResponseWriter, r *http.Request) (status int, err
 		return http.StatusBadRequest, nil
 	}
 
-	c.Storage.Site.Favicon = r.FormValue("favicon")
-	c.Storage.Site.Styles = r.FormValue("styles")
-	c.Storage.Site.StylesAppend = (r.FormValue("stylesappend") == "on")
-	c.Storage.Site.StackEdit = (r.FormValue("stackedit") == "on")
-	c.Storage.Site.Prism = (r.FormValue("prism") == "on")
+	site.Favicon = r.FormValue("favicon")
+	site.Styles = r.FormValue("styles")
+	site.StylesAppend = (r.FormValue("stylesappend") == "on")
+	site.StackEdit = (r.FormValue("stackedit") == "on")
+	site.Prism = (r.FormValue("prism") == "on")
 
-	err = c.Storage.Save()
-	if err != nil {
+	if err := c.Storage.Save(site); err != nil {
 		return http.StatusInternalServerError, err
 	}
 

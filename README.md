@@ -47,6 +47,11 @@ export PBB_GCP_REGION=us-central1
 ## Friendly identifier when you generate the MFA string.
 export PBB_ISSUER=www.example.com
 
+# Cache TTL
+## Cache TTL in case multiple instances are running and other instances made updates, default is 1m
+## See https://pkg.go.dev/time#ParseDuration for format
+export PBB_CACHE_TTL=1m
+
 # Local Development
 ## Set this to any value to allow you to do testing locally without GCP access.
 ## See 'Local Development Flag' section below for more information.
