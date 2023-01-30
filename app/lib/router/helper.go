@@ -8,9 +8,13 @@ func (m *Mux) Delete(path string, fn HandlerFunc) {
 	})
 }
 
-// Get is a shortcut for router.Handle("GET", path, handle)
+// Get registers handler on path for both GET and HEAD verbs
 func (m *Mux) Get(path string, fn HandlerFunc) {
 	m.router.Handle("GET", path, handler{
+		HandlerFunc:     fn,
+		CustomServeHTTP: m.customServeHTTP,
+	})
+	m.router.Handle("HEAD", path, handler{
 		HandlerFunc:     fn,
 		CustomServeHTTP: m.customServeHTTP,
 	})
