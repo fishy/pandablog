@@ -23,11 +23,11 @@ func (te *Engine) SanitizedHTML(content string) []byte {
 }
 
 // sanitizedContent returns a sanitized content block or an error is one occurs.
-func (te *Engine) sanitizedContent(t *template.Template, content string) (*template.Template, error) {
-	htmlCode := te.SanitizedHTML(content)
+func (te *Engine) sanitizedContent(t *template.Template, name, markdown string) (*template.Template, error) {
+	htmlCode := te.SanitizedHTML(markdown)
 
 	// Change delimiters temporarily so code samples can use Go blocks.
-	safeContent := fmt.Sprintf(`[{[{define "content"}]}]%s[{[{end}]}]`, string(htmlCode))
+	safeContent := fmt.Sprintf(`[{[{define "%s"}]}]%s[{[{end}]}]`, name, htmlCode)
 	t = t.Delims("[{[{", "}]}]")
 	var err error
 	t, err = t.Parse(safeContent)

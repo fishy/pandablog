@@ -81,9 +81,6 @@ func FuncMap(
 		}
 		return site.CactusSiteName
 	}
-	fm["SiteFooter"] = func() string {
-		return site.Footer
-	}
 	fm["MFAEnabled"] = func() bool {
 		return len(os.Getenv("PBB_MFA_KEY")) > 0
 	}

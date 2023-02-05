@@ -1,6 +1,7 @@
 package html
 
 import (
+	"context"
 	"crypto/md5"
 	"embed"
 	"fmt"
@@ -73,6 +74,15 @@ func (tm *TemplateManager) PostTemplate(r *http.Request, mainTemplate string) (*
 	}
 
 	return t, nil
+}
+
+// FooterMarkdown returns the markdown version of the footer.
+func (tm *TemplateManager) FooterMarkdown(ctx context.Context) (string, error) {
+	site, err := tm.storage.Site.Load(ctx)
+	if err != nil {
+		return "", err
+	}
+	return site.Footer, nil
 }
 
 // assetTimePath returns a URL with a MD5 hash appended.

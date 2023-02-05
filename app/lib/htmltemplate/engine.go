@@ -45,6 +45,16 @@ func (te *Engine) partialTemplate(w http.ResponseWriter, r *http.Request, mainTe
 		return http.StatusInternalServerError, err
 	}
 
+	// Parse the footer.
+	footer, err := te.manager.FooterMarkdown(r.Context())
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	t, err = te.sanitizedContent(t, "footer", footer)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
 	// Output the status code.
 	w.WriteHeader(statusCode)
 
@@ -60,6 +70,7 @@ func (te *Engine) partialTemplate(w http.ResponseWriter, r *http.Request, mainTe
 // writer. Returns an HTTP status code and an error if one occurs.
 func (te *Engine) Post(w http.ResponseWriter, r *http.Request, mainTemplate string,
 	post model.Post, vars map[string]interface{}) (status int, err error) {
+
 	// Display 404 if not found.
 	if post.URL == "" {
 		return http.StatusNotFound, nil
@@ -71,8 +82,18 @@ func (te *Engine) Post(w http.ResponseWriter, r *http.Request, mainTemplate stri
 		return http.StatusInternalServerError, err
 	}
 
+	// Parse the footer.
+	footer, err := te.manager.FooterMarkdown(r.Context())
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	t, err = te.sanitizedContent(t, "footer", footer)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
 	// Parse the content.
-	t, err = te.sanitizedContent(t, post.Content)
+	t, err = te.sanitizedContent(t, "content", post.Content)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
