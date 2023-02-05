@@ -6,8 +6,7 @@ COPY . .
 
 RUN go version
 RUN go mod download
-RUN go vet ./...
-RUN go test ./...
+RUN touch .env && make test
 
 RUN CGO_ENABLED=0 go build -trimpath -o /go/bin/app
 

@@ -15,8 +15,8 @@ include .env
 gcloud=gcloud --project=$(PBB_GCP_PROJECT_ID)
 docker_image=$(PBB_GCP_REGION)-docker.pkg.dev/$(PBB_GCP_PROJECT_ID)/${PBB_GCP_IMAGE_NAME}/${PBB_GCP_IMAGE_NAME}
 
-.PHONY: default
-default: gcp-push
+.PHONY: deploy
+deploy: gcp-push
 
 ################################################################################
 # Deploy application
@@ -36,7 +36,7 @@ gcp-init:
 		--location=$(PBB_GCP_REGION)
 
 .PHONY: gcp-push
-gcp-push:
+gcp-push: test
 	@echo Pushing to Google Cloud Run.
 	$(gcloud) builds submit --tag $(docker_image)
 	$(gcloud) run deploy --image $(docker_image) \
@@ -82,4 +82,5 @@ local-run:
 
 .PHONY: test
 test:
-	@go test -race ./...
+	go vet ./...
+	go test -race ./...
