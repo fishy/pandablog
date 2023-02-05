@@ -9,8 +9,8 @@ import (
 
 	"golang.org/x/term"
 
-	"github.com/josephspurrier/polarbearblog/app/lib/passhash"
-	"github.com/josephspurrier/polarbearblog/app/lib/timezone"
+	"go.yhsif.com/pandablog/app/lib/passhash"
+	"go.yhsif.com/pandablog/app/lib/timezone"
 )
 
 func init() {

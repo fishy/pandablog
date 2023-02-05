@@ -9,11 +9,11 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/josephspurrier/polarbearblog/app/lib/datastorage"
-	"github.com/josephspurrier/polarbearblog/app/lib/htmltemplate"
-	"github.com/josephspurrier/polarbearblog/app/lib/router"
-	"github.com/josephspurrier/polarbearblog/app/lib/websession"
-	"github.com/josephspurrier/polarbearblog/assets"
+	"go.yhsif.com/pandablog/app/lib/datastorage"
+	"go.yhsif.com/pandablog/app/lib/htmltemplate"
+	"go.yhsif.com/pandablog/app/lib/router"
+	"go.yhsif.com/pandablog/app/lib/websession"
+	"go.yhsif.com/pandablog/assets"
 )
 
 // Core -
@@ -54,7 +54,7 @@ func setupRouter(tmpl *htmltemplate.Engine) *router.Mux {
 	customServeHTTP := func(w http.ResponseWriter, r *http.Request, status int, err error) {
 		// Handle only errors.
 		if status >= 400 {
-			vars := make(map[string]interface{})
+			vars := make(map[string]any)
 			vars["title"] = fmt.Sprint(status)
 			errTemplate := "400"
 			if status == 404 {

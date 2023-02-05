@@ -5,8 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/josephspurrier/polarbearblog/app/middleware"
-	"github.com/stretchr/testify/assert"
+	"go.yhsif.com/pandablog/app/middleware"
 )
 
 func TestNewSession(t *testing.T) {
@@ -15,5 +14,7 @@ func TestNewSession(t *testing.T) {
 	mux := http.NewServeMux()
 	mw := middleware.Head(mux)
 	mw.ServeHTTP(w, r)
-	assert.Equal(t, http.StatusOK, w.Result().StatusCode)
+	if got, want := w.Result().StatusCode, http.StatusOK; got != want {
+		t.Errorf("StatusCode got %v want %v", got, want)
+	}
 }

@@ -9,13 +9,14 @@ import (
 	"time"
 
 	"github.com/alexedwards/scs/v2"
-	"github.com/josephspurrier/polarbearblog/app/lib/datastorage"
-	"github.com/josephspurrier/polarbearblog/app/lib/envdetect"
-	"github.com/josephspurrier/polarbearblog/app/lib/htmltemplate"
-	"github.com/josephspurrier/polarbearblog/app/lib/websession"
-	"github.com/josephspurrier/polarbearblog/app/middleware"
-	"github.com/josephspurrier/polarbearblog/app/route"
-	"github.com/josephspurrier/polarbearblog/html"
+
+	"go.yhsif.com/pandablog/app/lib/datastorage"
+	"go.yhsif.com/pandablog/app/lib/envdetect"
+	"go.yhsif.com/pandablog/app/lib/htmltemplate"
+	"go.yhsif.com/pandablog/app/lib/websession"
+	"go.yhsif.com/pandablog/app/middleware"
+	"go.yhsif.com/pandablog/app/route"
+	"go.yhsif.com/pandablog/html"
 )
 
 var (

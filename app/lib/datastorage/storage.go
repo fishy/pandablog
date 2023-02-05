@@ -9,8 +9,8 @@ import (
 
 	"go.yhsif.com/stalecache"
 
-	"github.com/josephspurrier/polarbearblog/app/lib/envdetect"
-	"github.com/josephspurrier/polarbearblog/app/model"
+	"go.yhsif.com/pandablog/app/lib/envdetect"
+	"go.yhsif.com/pandablog/app/model"
 )
 
 // Datastorer reads and writes data to an object.

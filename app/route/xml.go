@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/josephspurrier/polarbearblog/app/model"
+	"go.yhsif.com/pandablog/app/model"
 )
 
 // XMLUtil -

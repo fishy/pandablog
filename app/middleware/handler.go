@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"github.com/josephspurrier/polarbearblog/app/lib/htmltemplate"
-	"github.com/josephspurrier/polarbearblog/app/lib/router"
-	"github.com/josephspurrier/polarbearblog/app/lib/websession"
+	"go.yhsif.com/pandablog/app/lib/htmltemplate"
+	"go.yhsif.com/pandablog/app/lib/router"
+	"go.yhsif.com/pandablog/app/lib/websession"
 )
 
 // Handler -

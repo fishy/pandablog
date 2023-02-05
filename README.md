@@ -1,9 +1,7 @@
-# Polar Bear Blog 🐻‍❄️
+# Panda Blog 🐼
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/josephspurrier/polarbearblog)](https://goreportcard.com/report/github.com/josephspurrier/polarbearblog)
-[![GoDoc](https://godoc.org/github.com/josephspurrier/polarbearblog?status.svg)](https://godoc.org/github.com/josephspurrier/polarbearblog) 
-[![GitHub Actions status](https://github.com/josephspurrier/polarbearblog/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/josephspurrier/polarbearblog/actions)
-[![Coverage Status](https://coveralls.io/repos/github/josephspurrier/polarbearblog/badge.svg?branch=main)](https://coveralls.io/github/josephspurrier/polarbearblog?branch=main)
+A fork of [PolarBearBlog](https://github.com/josephspurrier/polarbearblog).
+See an active example [here](https://b.yuxuan.org).
 
 Lightweight blogging system for a single author. Written in Go and deploys to your own GCP project with a few commands. It's a derivative of the beautifully simple [Bear Blog 🐻](https://bearblog.dev/). The data storage and session storage are stored in Google Cloud Storage as objects. Depending on the traffic and blog size, it should (not guaranteed) cost less than $1 USD per month (compute and storage) to host this blog because it will be deployed to [Google Cloud Run](https://cloud.google.com/run/pricing) which bills to the nearest 100 millisecond. You can also [map your own domain name](https://cloud.google.com/run/docs/mapping-custom-domains) and Google will provide a free SSL certificate. This project uses `make` to simplify the deployment process.
 
@@ -11,7 +9,7 @@ You can see an active website using this stack [here](https://www.josephspurrier
 
 ## Quickstart on Local
 
-- Clone the repository: `git@github.com:josephspurrier/polarbearblog.git`
+- Clone the repository: `git clone https://github.com/fishy/pandablog`
 - Create a new file called `.env` in the root of the repository with this content:
 
 ```bash

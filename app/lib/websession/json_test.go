@@ -2,46 +2,58 @@ package websession_test
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
-	"github.com/josephspurrier/polarbearblog/app/lib/datastorage"
-	"github.com/josephspurrier/polarbearblog/app/lib/websession"
-	"github.com/stretchr/testify/assert"
+	"go.yhsif.com/pandablog/app/lib/datastorage"
+	"go.yhsif.com/pandablog/app/lib/websession"
 )
 
 func TestNewJSONSession(t *testing.T) {
 	// Use local filesytem when developing.
-	f := "data.bin"
-	t.Cleanup(func() {
-		os.Remove(f)
-	})
-	err := os.WriteFile(f, []byte(""), 0644)
-	assert.NoError(t, err)
+	f := filepath.Join(t.TempDir(), "data.bin")
+	if err := os.WriteFile(f, []byte(""), 0644); err != nil {
+		t.Fatalf("Failed to create file %q: %v", f, err)
+	}
 	ss := datastorage.NewLocalStorage(f)
 
 	// Set up the session storage provider.
 	secretkey := "82a18fbbfed2694bb15d512a70c53b1a088e669966918d3d474564b2ac44349b"
 	en := websession.NewEncryptedStorage(secretkey)
 	store, err := websession.NewJSONSession(ss, en)
-	assert.NoError(t, err)
+	if err != nil {
+		t.Fatalf("Failed to create json session: %v", err)
+	}
 
 	token := "abc"
 	data := "hello"
 	now := time.Now()
 
-	err = store.Commit(token, []byte(data), now)
-	assert.NoError(t, err)
+	if err := store.Commit(token, []byte(data), now); err != nil {
+		t.Fatalf("Failed to commit: %v", err)
+	}
 
 	b, exists, err := store.Find(token)
-	assert.NoError(t, err)
-	assert.True(t, exists)
-	assert.Equal(t, data, string(b))
+	if err != nil {
+		t.Fatalf("store.Find failed: %v", err)
+	}
+	if !exists {
+		t.Error("store.Find returned false on exists")
+	}
+	if got, want := string(b), data; got != data {
+		t.Errorf("store.Find got %q want %q", got, want)
+	}
 
-	err = store.Delete(token)
-	assert.NoError(t, err)
+	if err := store.Delete(token); err != nil {
+		t.Fatalf("store.Delete failed: %v", err)
+	}
 
 	_, exists, err = store.Find(token)
-	assert.NoError(t, err)
-	assert.False(t, exists)
+	if err != nil {
+		t.Fatalf("store.Find failed: %v", err)
+	}
+	if exists {
+		t.Errorf("store.Find returned true on exits")
+	}
 }

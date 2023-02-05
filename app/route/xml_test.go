@@ -6,9 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/josephspurrier/polarbearblog/app/lib/router"
-	"github.com/josephspurrier/polarbearblog/app/route"
-	"github.com/stretchr/testify/assert"
+	"go.yhsif.com/pandablog/app/lib/router"
+	"go.yhsif.com/pandablog/app/route"
 )
 
 func setupRouter() *router.Mux {
@@ -36,6 +35,10 @@ func TestXML(t *testing.T) {
 	mux.ServeHTTP(w, r)
 
 	b, err := io.ReadAll(w.Result().Body)
-	assert.NoError(t, err)
-	assert.Equal(t, "User-agent: *\nAllow: /", string(b))
+	if err != nil {
+		t.Errorf("Failed to read body: %v", err)
+	}
+	if got, want := string(b), "User-agent: *\nAllow: /"; got != want {
+		t.Errorf("body got %q want %q", got, want)
+	}
 }

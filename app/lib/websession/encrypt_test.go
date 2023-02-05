@@ -1,9 +1,8 @@
 package websession
 
 import (
+	"bytes"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestEncrypt(t *testing.T) {
@@ -13,10 +12,15 @@ func TestEncrypt(t *testing.T) {
 	en := NewEncryptedStorage(key)
 
 	enc, err := en.Encrypt(raw)
-	assert.NoError(t, err)
+	if err != nil {
+		t.Fatalf("Failed to encrypt: %v", err)
+	}
 
 	dec, err := en.Decrypt(enc)
-	assert.NoError(t, err)
-
-	assert.Equal(t, raw, dec)
+	if err != nil {
+		t.Fatalf("Failed to decrypt: %v", err)
+	}
+	if got, want := dec, raw; !bytes.Equal(got, want) {
+		t.Errorf("Decrypted got %q want %q", dec, raw)
+	}
 }

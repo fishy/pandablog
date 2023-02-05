@@ -12,9 +12,9 @@ import (
 	"path"
 	"strings"
 
-	"github.com/josephspurrier/polarbearblog/app/lib/datastorage"
-	"github.com/josephspurrier/polarbearblog/app/lib/websession"
-	"github.com/josephspurrier/polarbearblog/assets"
+	"go.yhsif.com/pandablog/app/lib/datastorage"
+	"go.yhsif.com/pandablog/app/lib/websession"
+	"go.yhsif.com/pandablog/assets"
 )
 
 //go:embed *
@@ -82,7 +82,7 @@ func (tm *TemplateManager) FooterMarkdown(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return site.Footer, nil
+	return site.FooterMarkdown(), nil
 }
 
 // assetTimePath returns a URL with a MD5 hash appended.

@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/josephspurrier/polarbearblog/app"
-	"github.com/josephspurrier/polarbearblog/app/lib/timezone"
+	"go.yhsif.com/pandablog/app"
+	"go.yhsif.com/pandablog/app/lib/timezone"
 )
 
 func init() {

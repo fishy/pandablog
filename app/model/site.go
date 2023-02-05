@@ -7,6 +7,9 @@ import (
 	"time"
 )
 
+// DefaultFooter is the default Footer.
+const DefaultFooter = `Powered by [🐼](https://github.com/fishy/pandablog), theme by [🐻](https://bearblog.dev/)`
+
 // Site -
 type Site struct {
 	Title             string          `json:"title"`
@@ -14,7 +17,6 @@ type Site struct {
 	Author            string          `json:"author"`
 	Favicon           string          `json:"favicon"`
 	Description       string          `json:"description"`
-	Footer            string          `json:"footer"`
 	Scheme            string          `json:"scheme"`
 	URL               string          `json:"url"`
 	HomeURL           string          `json:"homeurl"`
@@ -32,6 +34,8 @@ type Site struct {
 	ISODate           bool            `json:"isodate"`
 	Posts             map[string]Post `json:"posts"`
 
+	Footer *string `json:"footer"`
+
 	postsLock sync.RWMutex `json:"-"`
 }
 
@@ -48,6 +52,14 @@ func (s *Site) SiteTitle() string {
 // SiteSubtitle -
 func (s *Site) SiteSubtitle() string {
 	return s.Subtitle
+}
+
+// FooterMarkdown returns the markdown content of the footer.
+func (s *Site) FooterMarkdown() string {
+	if s.Footer == nil {
+		return DefaultFooter
+	}
+	return *s.Footer
 }
 
 // PublishedPosts -

@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/josephspurrier/polarbearblog/app/lib/uuid"
-	"github.com/josephspurrier/polarbearblog/app/model"
 	"github.com/matryer/way"
+
+	"go.yhsif.com/pandablog/app/lib/uuid"
+	"go.yhsif.com/pandablog/app/model"
 )
 
 // AdminPost -
@@ -29,7 +30,7 @@ func (c *AdminPost) index(w http.ResponseWriter, r *http.Request) (status int, e
 		return http.StatusInternalServerError, err
 	}
 
-	vars := make(map[string]interface{})
+	vars := make(map[string]any)
 	vars["title"] = "Posts"
 	vars["posts"] = site.PostsAndPages(false)
 
@@ -37,7 +38,7 @@ func (c *AdminPost) index(w http.ResponseWriter, r *http.Request) (status int, e
 }
 
 func (c *AdminPost) create(w http.ResponseWriter, r *http.Request) (status int, err error) {
-	vars := make(map[string]interface{})
+	vars := make(map[string]any)
 	vars["title"] = "New post"
 	vars["token"] = c.Sess.SetCSRF(r)
 
@@ -101,7 +102,7 @@ func (c *AdminPost) edit(w http.ResponseWriter, r *http.Request) (status int, er
 		return http.StatusInternalServerError, err
 	}
 
-	vars := make(map[string]interface{})
+	vars := make(map[string]any)
 	vars["title"] = "Edit post"
 	vars["token"] = c.Sess.SetCSRF(r)
 

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/josephspurrier/polarbearblog/app/lib/envdetect"
+	"go.yhsif.com/pandablog/app/lib/envdetect"
 )
 
 // Redirect will handle all redirects required.

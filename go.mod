@@ -1,4 +1,4 @@
-module github.com/josephspurrier/polarbearblog
+module go.yhsif.com/pandablog
 
 go 1.20
 
@@ -10,7 +10,6 @@ require (
 	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/microcosm-cc/bluemonday v1.0.22
 	github.com/russross/blackfriday/v2 v2.1.0
-	github.com/stretchr/testify v1.8.1
 	go.yhsif.com/stalecache v0.2.0
 	golang.org/x/crypto v0.5.0
 	golang.org/x/term v0.4.0
@@ -23,7 +22,6 @@ require (
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/iam v0.8.0 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
@@ -33,7 +31,6 @@ require (
 	github.com/gorilla/css v1.0.0 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/ssor/bom v0.0.0-20170718123548-6386211fdfcf // indirect
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/net v0.5.0 // indirect
@@ -46,6 +43,5 @@ require (
 	google.golang.org/genproto v0.0.0-20230110181048-76db0878b65f // indirect
 	google.golang.org/grpc v1.51.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 	rsc.io/qr v0.2.0 // indirect
 )

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/josephspurrier/polarbearblog/app/lib/envdetect"
+	"go.yhsif.com/pandablog/app/lib/envdetect"
 )
 
 // SessionDatabase -

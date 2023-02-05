@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/josephspurrier/polarbearblog/app/model"
+	"go.yhsif.com/pandablog/app/model"
 )
 
 // HomePost -
@@ -36,7 +36,7 @@ func (c *HomePost) show(w http.ResponseWriter, r *http.Request) (status int, err
 		p.Content = "*No content yet.*"
 	}
 
-	vars := make(map[string]interface{})
+	vars := make(map[string]any)
 	return c.Render.Post(w, r, "base", p, vars)
 }
 
@@ -46,7 +46,7 @@ func (c *HomePost) edit(w http.ResponseWriter, r *http.Request) (status int, err
 		return http.StatusInternalServerError, err
 	}
 
-	vars := make(map[string]interface{})
+	vars := make(map[string]any)
 	vars["title"] = "Edit site"
 	vars["homeContent"] = site.Content
 	vars["ptitle"] = site.Title
@@ -68,7 +68,7 @@ func (c *HomePost) edit(w http.ResponseWriter, r *http.Request) (status int, err
 	vars["googleanalytics"] = site.GoogleAnalyticsID
 	vars["disqus"] = site.DisqusID
 	vars["cactus"] = site.CactusSiteName
-	vars["footer"] = site.Footer
+	vars["footer"] = site.FooterMarkdown()
 	vars["isodate"] = site.ISODate
 
 	return c.Render.Template(w, r, "dashboard", "home_edit", vars)
@@ -100,8 +100,9 @@ func (c *HomePost) update(w http.ResponseWriter, r *http.Request) (status int, e
 	site.GoogleAnalyticsID = r.FormValue("googleanalytics")
 	site.DisqusID = r.FormValue("disqus")
 	site.CactusSiteName = r.FormValue("cactus")
-	site.Footer = r.FormValue("footer")
 	site.ISODate = (r.FormValue("isodate") == "on")
+	footer := r.FormValue("footer")
+	site.Footer = &footer
 	site.Updated = time.Now()
 
 	err = c.Storage.Save(site)

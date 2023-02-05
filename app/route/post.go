@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/josephspurrier/polarbearblog/app/lib/htmltemplate"
-	"github.com/josephspurrier/polarbearblog/app/model"
 	"github.com/matryer/way"
+
+	"go.yhsif.com/pandablog/app/lib/htmltemplate"
+	"go.yhsif.com/pandablog/app/model"
 )
 
 // Post -
@@ -28,7 +29,7 @@ func (c *Post) index(w http.ResponseWriter, r *http.Request) (status int, err er
 		return http.StatusInternalServerError, err
 	}
 
-	vars := make(map[string]interface{})
+	vars := make(map[string]any)
 	vars["tags"] = site.Tags(true)
 
 	// Determine if there is query.
@@ -80,7 +81,7 @@ func (c *Post) show(w http.ResponseWriter, r *http.Request) (status int, err err
 		return http.StatusNotFound, nil
 	}
 
-	vars := make(map[string]interface{})
+	vars := make(map[string]any)
 	// Don't show certain items on pages.
 	if !p.Page {
 		vars["title"] = p.Title

@@ -79,3 +79,7 @@ local-init:
 local-run:
 	@echo Starting local server.
 	LOCALDEV=true go run main.go
+
+.PHONY: test
+test:
+	@go test -race ./...

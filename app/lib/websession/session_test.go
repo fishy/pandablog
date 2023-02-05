@@ -5,28 +5,29 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
 	"github.com/alexedwards/scs/v2"
-	"github.com/josephspurrier/polarbearblog/app/lib/datastorage"
-	"github.com/josephspurrier/polarbearblog/app/lib/websession"
-	"github.com/stretchr/testify/assert"
+
+	"go.yhsif.com/pandablog/app/lib/datastorage"
+	"go.yhsif.com/pandablog/app/lib/websession"
 )
 
 func TestNewSession(t *testing.T) {
 	// Set up the session storage provider.
-	f := "data.bin"
-	t.Cleanup(func() {
-		os.Remove(f)
-	})
-	err := os.WriteFile(f, []byte(""), 0644)
-	assert.NoError(t, err)
+	f := filepath.Join(t.TempDir(), "data.bin")
+	if err := os.WriteFile(f, []byte(""), 0644); err != nil {
+		t.Fatalf("Failed to create %q: %v", f, err)
+	}
 	ss := datastorage.NewLocalStorage(f)
 	secretkey := "82a18fbbfed2694bb15d512a70c53b1a088e669966918d3d474564b2ac44349b"
 	en := websession.NewEncryptedStorage(secretkey)
 	store, err := websession.NewJSONSession(ss, en)
-	assert.NoError(t, err)
+	if err != nil {
+		t.Fatalf("Failed to create json session: %v", err)
+	}
 
 	// Initialize a new session manager and configure the session lifetime.
 	sessionManager := scs.New()
@@ -43,25 +44,39 @@ func TestNewSession(t *testing.T) {
 		u := "foo"
 		sess.SetUser(r, u)
 		user, found := sess.User(r)
-		assert.True(t, found)
-		assert.Equal(t, u, user)
+		if !found {
+			t.Errorf("Did not find user")
+		}
+		if got, want := user, u; got != want {
+			t.Errorf("User got %q want %q", got, want)
+		}
 
 		// Test Logout
 		sess.Logout(r)
 		_, found = sess.User(r)
-		assert.False(t, found)
+		if found {
+			t.Errorf("Should not find user")
+		}
 
 		// Test persistence
-		assert.Equal(t, sessionManager.Cookie.Persist, false)
+		if sessionManager.Cookie.Persist {
+			t.Error("sessionManager.Cookie.Persist should not be true")
+		}
 		sess.RememberMe(r, true)
-		assert.Equal(t, sessionManager.Cookie.Persist, true)
+		if !sessionManager.Cookie.Persist {
+			t.Error("sessionManager.Cookie.Persist should not be false")
+		}
 
 		// Test CSRF
-		assert.False(t, sess.CSRF(r))
+		if got, want := sess.CSRF(r), false; got != want {
+			t.Errorf("sess.CSRF(r) got %v want %v", got, want)
+		}
 		token := sess.SetCSRF(r)
 		r.Form = url.Values{}
 		r.Form.Set("token", token)
-		assert.True(t, sess.CSRF(r))
+		if got, want := sess.CSRF(r), true; got != want {
+			t.Errorf("sess.CSRF(r) got %v want %v", got, want)
+		}
 	})
 
 	mw := sessionManager.LoadAndSave(mux)

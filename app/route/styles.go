@@ -20,7 +20,7 @@ func (c *Styles) edit(w http.ResponseWriter, r *http.Request) (status int, err e
 		return http.StatusInternalServerError, err
 	}
 
-	vars := make(map[string]interface{})
+	vars := make(map[string]any)
 	vars["title"] = "Site styles"
 	vars["token"] = c.Sess.SetCSRF(r)
 	vars["favicon"] = site.Favicon

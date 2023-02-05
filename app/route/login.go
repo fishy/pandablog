@@ -8,10 +8,11 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/josephspurrier/polarbearblog/app/lib/envdetect"
-	"github.com/josephspurrier/polarbearblog/app/lib/passhash"
-	"github.com/josephspurrier/polarbearblog/app/lib/totp"
 	"github.com/matryer/way"
+
+	"go.yhsif.com/pandablog/app/lib/envdetect"
+	"go.yhsif.com/pandablog/app/lib/passhash"
+	"go.yhsif.com/pandablog/app/lib/totp"
 )
 
 // AuthUtil -
@@ -37,7 +38,7 @@ func (c *AuthUtil) login(w http.ResponseWriter, r *http.Request) (status int, er
 		return http.StatusNotFound, nil
 	}
 
-	vars := make(map[string]interface{})
+	vars := make(map[string]any)
 	vars["title"] = "Login"
 	vars["token"] = c.Sess.SetCSRF(r)
 

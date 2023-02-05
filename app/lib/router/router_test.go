@@ -10,8 +10,6 @@ import (
 	"net/url"
 	"strings"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 // defaultServeHTTP is the default ServeHTTP function that receives the status and error from
@@ -31,7 +29,9 @@ func TestParams(t *testing.T) {
 	mux := New(defaultServeHTTP, nil)
 	mux.Get("/user/:name", HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) (status int, err error) {
-			assert.Equal(t, "john", mux.Param(r, "name"))
+			if got, want := mux.Param(r, "name"), "john"; got != want {
+				t.Errorf("name got %q want %q", got, want)
+			}
 			return http.StatusOK, nil
 		}))
 
@@ -45,7 +45,9 @@ func TestInstance(t *testing.T) {
 
 	mux.Get("/user/:name", HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) (status int, err error) {
-			assert.Equal(t, "john", mux.Param(r, "name"))
+			if got, want := mux.Param(r, "name"), "john"; got != want {
+				t.Errorf("name got %q want %q", got, want)
+			}
 			return http.StatusOK, nil
 		}))
 
@@ -63,7 +65,9 @@ func TestPostForm(t *testing.T) {
 	mux.Post("/user", HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) (status int, err error) {
 			r.ParseForm()
-			assert.Equal(t, "jsmith", r.FormValue("username"))
+			if got, want := r.FormValue("username"), "jsmith"; got != want {
+				t.Errorf("username got %q want %q", got, want)
+			}
 			return http.StatusOK, nil
 		}))
 
@@ -76,17 +80,23 @@ func TestPostForm(t *testing.T) {
 func TestPostJSON(t *testing.T) {
 	mux := New(defaultServeHTTP, nil)
 
-	j, err := json.Marshal(map[string]interface{}{
+	j, err := json.Marshal(map[string]any{
 		"username": "jsmith",
 	})
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Failed to marshal json: %v", err)
+	}
 
 	mux.Post("/user", HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) (status int, err error) {
 			b, err := io.ReadAll(r.Body)
-			assert.Nil(t, err)
+			if err != nil {
+				t.Fatalf("Failed to read body: %v", err)
+			}
 			r.Body.Close()
-			assert.Equal(t, `{"username":"jsmith"}`, string(b))
+			if got, want := string(b), `{"username":"jsmith"}`; got != want {
+				t.Errorf("Body got %q want %q", got, want)
+			}
 			return http.StatusOK, nil
 		}))
 
@@ -111,7 +121,9 @@ func TestGet(t *testing.T) {
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
 
-	assert.Equal(t, true, called)
+	if got, want := called, true; got != want {
+		t.Errorf("called got %v want %v", got, want)
+	}
 }
 
 func TestDelete(t *testing.T) {
@@ -129,7 +141,9 @@ func TestDelete(t *testing.T) {
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
 
-	assert.Equal(t, true, called)
+	if got, want := called, true; got != want {
+		t.Errorf("called got %v want %v", got, want)
+	}
 }
 
 func TestHead(t *testing.T) {
@@ -147,7 +161,9 @@ func TestHead(t *testing.T) {
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
 
-	assert.Equal(t, true, called)
+	if got, want := called, true; got != want {
+		t.Errorf("called got %v want %v", got, want)
+	}
 }
 
 func TestOptions(t *testing.T) {
@@ -165,7 +181,9 @@ func TestOptions(t *testing.T) {
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
 
-	assert.Equal(t, true, called)
+	if got, want := called, true; got != want {
+		t.Errorf("called got %v want %v", got, want)
+	}
 }
 
 func TestPatch(t *testing.T) {
@@ -183,7 +201,9 @@ func TestPatch(t *testing.T) {
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
 
-	assert.Equal(t, true, called)
+	if got, want := called, true; got != want {
+		t.Errorf("called got %v want %v", got, want)
+	}
 }
 
 func TestPut(t *testing.T) {
@@ -201,7 +221,9 @@ func TestPut(t *testing.T) {
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
 
-	assert.Equal(t, true, called)
+	if got, want := called, true; got != want {
+		t.Errorf("called got %v want %v", got, want)
+	}
 }
 
 func Test404(t *testing.T) {
@@ -219,8 +241,12 @@ func Test404(t *testing.T) {
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
 
-	assert.Equal(t, false, called)
-	assert.Equal(t, http.StatusNotFound, w.Code)
+	if got, want := called, false; got != want {
+		t.Errorf("called got %v want %v", got, want)
+	}
+	if got, want := w.Code, http.StatusNotFound; got != want {
+		t.Errorf("HTTP status code got %v want %v", got, want)
+	}
 }
 
 func Test500NoError(t *testing.T) {
@@ -238,8 +264,12 @@ func Test500NoError(t *testing.T) {
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
 
-	assert.Equal(t, true, called)
-	assert.Equal(t, http.StatusInternalServerError, w.Code)
+	if got, want := called, true; got != want {
+		t.Errorf("called got %v want %v", got, want)
+	}
+	if got, want := w.Code, http.StatusInternalServerError; got != want {
+		t.Errorf("HTTP status code got %v want %v", got, want)
+	}
 }
 
 func Test500WithError(t *testing.T) {
@@ -258,9 +288,15 @@ func Test500WithError(t *testing.T) {
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
 
-	assert.Equal(t, true, called)
-	assert.Equal(t, http.StatusInternalServerError, w.Code)
-	assert.Equal(t, w.Body.String(), specificError.Error()+"\n")
+	if got, want := called, true; got != want {
+		t.Errorf("called got %v want %v", got, want)
+	}
+	if got, want := w.Code, http.StatusInternalServerError; got != want {
+		t.Errorf("HTTP status code got %v want %v", got, want)
+	}
+	if got, want := strings.TrimSpace(w.Body.String()), strings.TrimSpace(specificError.Error()); got != want {
+		t.Errorf("Body got %q want %q", got, want)
+	}
 }
 
 func Test400(t *testing.T) {
@@ -276,7 +312,9 @@ func Test400(t *testing.T) {
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
 
-	assert.Equal(t, http.StatusNotFound, w.Code)
+	if got, want := w.Code, http.StatusNotFound; got != want {
+		t.Errorf("HTTP status code got %v want %v", got, want)
+	}
 }
 
 func TestNotFound(t *testing.T) {
@@ -286,7 +324,9 @@ func TestNotFound(t *testing.T) {
 	w := httptest.NewRecorder()
 	mux.NotFound(w, r)
 
-	assert.Equal(t, http.StatusNotFound, w.Code)
+	if got, want := w.Code, http.StatusNotFound; got != want {
+		t.Errorf("HTTP status code got %v want %v", got, want)
+	}
 }
 
 func TestBadRequest(t *testing.T) {
@@ -296,5 +336,7 @@ func TestBadRequest(t *testing.T) {
 	w := httptest.NewRecorder()
 	mux.BadRequest(w, r)
 
-	assert.Equal(t, http.StatusBadRequest, w.Code)
+	if got, want := w.Code, http.StatusBadRequest; got != want {
+		t.Errorf("HTTP status code got %v want %v", got, want)
+	}
 }

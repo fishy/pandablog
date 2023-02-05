@@ -3,13 +3,14 @@ package model_test
 import (
 	"testing"
 
-	"github.com/josephspurrier/polarbearblog/app/model"
-	"github.com/stretchr/testify/assert"
+	"go.yhsif.com/pandablog/app/model"
 )
 
 func TestSiteURL(t *testing.T) {
 	s := new(model.Site)
 	s.Scheme = "http"
 	s.URL = "localhost"
-	assert.Equal(t, "http://localhost", s.SiteURL())
+	if got, want := s.SiteURL(), "http://localhost"; got != want {
+		t.Errorf("SiteURL() got %q want %q", got, want)
+	}
 }

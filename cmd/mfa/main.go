@@ -5,9 +5,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/josephspurrier/polarbearblog/app/lib/timezone"
-	"github.com/josephspurrier/polarbearblog/app/lib/totp"
 	"github.com/mdp/qrterminal/v3"
+
+	"go.yhsif.com/pandablog/app/lib/timezone"
+	"go.yhsif.com/pandablog/app/lib/totp"
 )
 
 func init() {
