@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/matryer/way"
 
-	"go.yhsif.com/pandablog/app/lib/uuid"
 	"go.yhsif.com/pandablog/app/model"
 )
 
@@ -51,7 +51,7 @@ func (c *AdminPost) store(w http.ResponseWriter, r *http.Request) (status int, e
 		return http.StatusInternalServerError, err
 	}
 
-	ID, err := uuid.Generate()
+	id, err := uuid.NewRandom()
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
@@ -87,12 +87,12 @@ func (c *AdminPost) store(w http.ResponseWriter, r *http.Request) (status int, e
 	p.Published = r.FormValue("publish") == "on"
 
 	// Save to storage.
-	site.UpdatePost(ID, &p)
+	site.UpdatePost(id.String(), &p)
 	if err := c.Storage.Save(site); err != nil {
 		return http.StatusInternalServerError, err
 	}
 
-	http.Redirect(w, r, "/dashboard/posts/"+ID, http.StatusFound)
+	http.Redirect(w, r, "/dashboard/posts/"+id.String(), http.StatusFound)
 	return
 }
 

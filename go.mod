@@ -6,6 +6,7 @@ require (
 	cloud.google.com/go/storage v1.29.0
 	github.com/alexedwards/scs/v2 v2.5.0
 	github.com/dgryski/dgoogauth v0.0.0-20190221195224-5a805980a5f3
+	github.com/google/uuid v1.3.0
 	github.com/matryer/way v0.0.0-20180416093233-9632d0c407b0
 	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/microcosm-cc/bluemonday v1.0.22
@@ -25,7 +26,6 @@ require (
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.1 // indirect
 	github.com/googleapis/gax-go/v2 v2.7.0 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
