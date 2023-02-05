@@ -34,6 +34,10 @@
         <span class="helptext">Optional if you want a different home URL and this site is only for blog.</span>
     </p>
     <p>
+        <label for="id_isodate">Always use <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601</a> date format:</label>
+        <input type="checkbox" name="isodate" id="id_isodate" {{if .isodate}}checked{{end}}>
+    </p>
+    <p>
         <label for="id_googleanalytics">Google analytics id:</label>
         <input type="text" name="googleanalytics" value="{{.googleanalytics}}" id="id_googleanalytics">
         <span class="helptext">Optional if you want analytics through Google.</span>

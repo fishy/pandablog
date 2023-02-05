@@ -27,7 +27,10 @@ func FuncMap(
 	fm["Stamp"] = func(t time.Time) string {
 		return t.Format("2006-01-02")
 	}
-	fm["StampFriendly"] = func(t time.Time) string {
+	fm["StampHuman"] = func(t time.Time) string {
+		if site.ISODate {
+			return t.Format("2006-01-02")
+		}
 		return t.Format("02 Jan, 2006")
 	}
 	fm["PublishedPages"] = func() []model.Post {

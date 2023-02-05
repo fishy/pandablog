@@ -29,6 +29,7 @@ type Site struct {
 	StylesAppend      bool            `json:"stylesappend"`
 	StackEdit         bool            `json:"stackedit"`
 	Prism             bool            `json:"prism"`
+	ISODate           bool            `json:"isodate"`
 	Posts             map[string]Post `json:"posts"`
 
 	postsLock sync.RWMutex `json:"-"`

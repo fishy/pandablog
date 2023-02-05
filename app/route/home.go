@@ -69,6 +69,7 @@ func (c *HomePost) edit(w http.ResponseWriter, r *http.Request) (status int, err
 	vars["disqus"] = site.DisqusID
 	vars["cactus"] = site.CactusSiteName
 	vars["footer"] = site.Footer
+	vars["isodate"] = site.ISODate
 
 	return c.Render.Template(w, r, "dashboard", "home_edit", vars)
 }
@@ -100,6 +101,7 @@ func (c *HomePost) update(w http.ResponseWriter, r *http.Request) (status int, e
 	site.DisqusID = r.FormValue("disqus")
 	site.CactusSiteName = r.FormValue("cactus")
 	site.Footer = r.FormValue("footer")
+	site.ISODate = (r.FormValue("isodate") == "on")
 	site.Updated = time.Now()
 
 	err = c.Storage.Save(site)
