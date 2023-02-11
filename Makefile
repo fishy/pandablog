@@ -9,8 +9,10 @@
 # * make local-init
 # * make local-run
 
+config?=
+
 # Load the environment variables.
-include .env
+include $(config).env
 
 gcloud=gcloud --project=$(PBB_GCP_PROJECT_ID)
 docker_image=$(PBB_GCP_REGION)-docker.pkg.dev/$(PBB_GCP_PROJECT_ID)/${PBB_GCP_IMAGE_NAME}/${PBB_GCP_IMAGE_NAME}
