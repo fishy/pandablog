@@ -138,7 +138,7 @@ func (c *XMLUtil) rss(w http.ResponseWriter, r *http.Request) (status int, err e
 		Title:         site.SiteTitle(),
 		Link:          site.SiteURL(),
 		Description:   site.Description,
-		Generator:     "Polar Bear Blog",
+		Generator:     "Polar Bear Blog - Selfhost Edition",
 		Language:      "en-us",
 		LastBuildDate: time.Now().Format(time.RFC1123Z),
 		AtomLink: AtomLink{
@@ -148,7 +148,7 @@ func (c *XMLUtil) rss(w http.ResponseWriter, r *http.Request) (status int, err e
 		},
 	}
 
-	allPosts := site.PostsAndPages(true)
+	allPosts := site.PublishedPostsWithID() // Exclude Pages for RSS
 	var posts []model.PostWithID
 
 	// Determine if there is query.
