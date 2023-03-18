@@ -17,6 +17,7 @@ h1, h2, h3, h4, h5, h6, strong, b {
 
 a {
     color: #3273dc;
+    text-decoration: none; /* Remove the underline of the link */
 }
 
 .title {
@@ -181,7 +182,6 @@ ul.blog-posts li a:visited {
     }
     a {
         color: #8cc2dd;
-        text-decoration: none; /* Remove the underline of the link */
     }
     code {
         background-color: #111;
