@@ -12,7 +12,9 @@
             <a href="{{HomeURL}}">Home</a>
             {{if Authenticated}}<a href="/dashboard">Dashboard</a>{{end}}
             {{range $p := PublishedPages}}
+            {{if not .HideInNav}}
             <a href="/{{.URL}}">{{.Title}}</a>
+            {{end}}
             {{end}}
             <a href="/blog">Blog</a>
         </nav>
