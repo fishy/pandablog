@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"syscall"
+	"golang.org/x/crypto/ssh/terminal"
 
-	"golang.org/x/term"
 
 	"go.yhsif.com/pandablog/app/lib/passhash"
 	"go.yhsif.com/pandablog/app/lib/timezone"
@@ -26,7 +25,7 @@ func main() {
 		pass = os.Args[1]
 	} else {
 		fmt.Print("Please input your desired password: ")
-		p, err := term.ReadPassword(syscall.Stdin)
+		p, err := terminal.ReadPassword(int(os.Stdin.Fd()))
 		fmt.Println()
 		if err != nil {
 			log.Fatalf("Unable to read password: %v", err)
