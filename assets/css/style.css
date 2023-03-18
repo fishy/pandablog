@@ -181,6 +181,7 @@ ul.blog-posts li a:visited {
     }
     a {
         color: #8cc2dd;
+        text-decoration: none; /* Remove the underline of the link */
     }
     code {
         background-color: #111;
