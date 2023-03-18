@@ -1,32 +1,20 @@
-# Run this workflow every time a new commit or PR pushed to the repository.
-on: [workflow_dispatch]
-# Name of the workflow. If this is blank, it will default to the path of the
-# file.
-name: Unit Tests
+name: Unit Test
+on: [push, pull_request]
+
 jobs:
-  # Name of the job.
-  unit-tests:
-    # Run the job on these Go versions and operating systems.
-    strategy:
-      matrix:
-        go-version:
-          - 1.20
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
-      # Don't cancel all jobs if one fails.
-      fail-fast: false
-    runs-on: ${{ matrix.os }}
+  build:
+    runs-on: ubuntu-latest
+
     steps:
-    # Install Go.
-    - name: Install Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ matrix.go-version }}
-    # Checkout the code.
-    - name: Checkout code
-      uses: actions/checkout@v2
-    # Run all the unit tests.
-    - name: Run all unit tests
-      run: go test -race ./...
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.20.x'
+          cache: true
+      - name: Install dependencies
+        run: go get .
+      - name: Build
+        run: go build -v ./...
+      - name: Test with the Go CLI
+        run: go test -race ./...
