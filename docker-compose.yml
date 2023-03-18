@@ -9,16 +9,11 @@ services:
       PBB_SESSION_KEY: <replace-me> # Generate using make privatekey
       PBB_PASSWORD_HASH: <replace-me> # Generate using make passhash 
       PBB_USERNAME: admin
-      PBB_ALLOW_HTML: true
+      PBB_ALLOW_HTML: 1
       # PBB_MFA_KEY: example.com
       # PBB_TIMEZONE: Asia/Singapore
       # PBB_ISSUER: www.example.com
       PBB_CACHE_TTL: 1m
       # PBB_LOCAL: true
-    healthcheck:
-      test: ["CMD", "bash", "-c", "exec 5<>/dev/tcp/127.0.0.1/8080"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
     ports:
       - 8080:8080
