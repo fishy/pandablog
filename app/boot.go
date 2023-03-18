@@ -11,7 +11,6 @@ import (
 	"github.com/alexedwards/scs/v2"
 
 	"go.yhsif.com/pandablog/app/lib/datastorage"
-	"go.yhsif.com/pandablog/app/lib/envdetect"
 	"go.yhsif.com/pandablog/app/lib/htmltemplate"
 	"go.yhsif.com/pandablog/app/lib/websession"
 	"go.yhsif.com/pandablog/app/middleware"
@@ -49,11 +48,6 @@ func Boot() (http.Handler, error) {
 		return nil, fmt.Errorf("environment variable missing: %v", "PBB_SESSION_KEY")
 	}
 
-	bucket := os.Getenv("PBB_GCP_BUCKET_NAME")
-	if len(bucket) == 0 {
-		return nil, fmt.Errorf("environment variable missing: %v", "PBB_GCP_BUCKET_NAME")
-	}
-
 	allowHTML, err := strconv.ParseBool(os.Getenv("PBB_ALLOW_HTML"))
 	if err != nil {
 		return nil, fmt.Errorf("environment variable not able to parse as bool: %v", "PBB_ALLOW_HTML")
@@ -63,15 +57,9 @@ func Boot() (http.Handler, error) {
 	var ds datastorage.Datastorer
 	var ss websession.Sessionstorer
 
-	if !envdetect.RunningLocalDev() {
-		// Use Google when running in GCP.
-		ds = datastorage.NewGCPStorage(bucket, storageSitePath)
-		ss = datastorage.NewGCPStorage(bucket, storageSessionPath)
-	} else {
-		// Use local filesytem when developing.
-		ds = datastorage.NewLocalStorage(storageSitePath)
-		ss = datastorage.NewLocalStorage(storageSessionPath)
-	}
+	// Always use local filesytem
+	ds = datastorage.NewLocalStorage(storageSitePath)
+	ss = datastorage.NewLocalStorage(storageSessionPath)
 
 	// Set up the data storage provider.
 	storage, err := datastorage.New(ds)

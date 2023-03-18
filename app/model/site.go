@@ -113,6 +113,23 @@ func (s *Site) PostsAndPages(onlyPublished bool) PostWithIDList {
 	return arr
 }
 
+// PublishedPostsWithID - for RSS, purposely ignore Page
+func (s *Site) PublishedPostsWithID() PostWithIDList {
+	s.postsLock.RLock()
+	arr := make(PostWithIDList, 0, len(s.Posts))
+	for k, v := range s.Posts {
+		if !v.Page && v.Published {
+			p := PostWithID{Post: v, ID: k}
+			arr = append(arr, p)
+		}
+	}
+	s.postsLock.RUnlock()
+
+	sort.Sort(sort.Reverse(arr))
+
+	return arr
+}
+
 // Tags -
 func (s *Site) Tags(onlyPublished bool) TagList {
 	s.postsLock.RLock()
