@@ -14,6 +14,9 @@
         {{if not .Published}}
         <small>(not published)</small>
         {{end}}
+        {{if .HideInNav}}
+        <small>(Hide In Nav Bar)</small>
+        {{end}}
     </li>
     {{end}}
 </ul>

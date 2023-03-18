@@ -55,6 +55,7 @@ type Post struct {
 	Published bool      `json:"published"`
 	Page      bool      `json:"page"`
 	Tags      TagList   `json:"tags"`
+	HideInNav bool      `json:"hideinnav"` // Applicable for pages only. If true, it will not be shown in the nav bar
 }
 
 // PostWithID -

@@ -48,6 +48,9 @@
         <label for="id_is_page">Is page:</label>
         <input type="checkbox" name="is_page" id="id_is_page" {{if .page}}checked{{end}}>
     </p>
+        <label for="id_hide_in_nav">Hide in nav:</label>
+        <input type="checkbox" name="hide_in_nav" id="id_hide_in_nav" {{if .hideinnav}}checked{{end}}>
+    </p>
     <p>
         <label for="id_publish">Publish:</label>
         <input type="checkbox" name="publish" id="id_publish" {{if .published}}checked{{end}}>
