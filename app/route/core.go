@@ -74,6 +74,11 @@ func setupRouter(tmpl *htmltemplate.Engine) *router.Mux {
 				log.Println(err.Error())
 			}
 		}
+		// Only add the content type for non assets files.
+		if !strings.HasPrefix(r.URL.Path, "/assets/") {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		}
+
 	}
 
 	// Send all 404 to the customer handler.
