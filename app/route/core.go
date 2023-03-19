@@ -74,8 +74,8 @@ func setupRouter(tmpl *htmltemplate.Engine) *router.Mux {
 				log.Println(err.Error())
 			}
 		}
-		// Only add the content type for non assets files.
-		if !strings.HasPrefix(r.URL.Path, "/assets/") {
+		// Only add the content type for non assets files (including xml).
+		if !strings.HasPrefix(r.URL.Path, "/assets/") && !strings.HasSuffix(r.URL.Path, ".xml") && !strings.HasSuffix(r.URL.Path, ".txt") {
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		}
 
