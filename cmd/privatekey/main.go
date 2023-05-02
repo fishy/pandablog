@@ -4,17 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"log"
-
-	"go.yhsif.com/pandablog/app/lib/timezone"
 )
-
-func init() {
-	// Verbose logging with file name and line number.
-	log.SetFlags(log.Lshortfile)
-	// Set the time zone.
-	timezone.Set()
-}
 
 func main() {
 	// Generate a new private key for AES-256.

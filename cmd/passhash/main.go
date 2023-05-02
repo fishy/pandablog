@@ -11,11 +11,11 @@ import (
 
 	"go.yhsif.com/pandablog/app/lib/passhash"
 	"go.yhsif.com/pandablog/app/lib/timezone"
+	"go.yhsif.com/pandablog/app/logging"
 )
 
 func init() {
-	// Verbose logging with file name and line number.
-	log.SetFlags(log.Lshortfile)
+	logging.InitText()
 	// Set the time zone.
 	timezone.Set()
 }

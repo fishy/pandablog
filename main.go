@@ -1,18 +1,18 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 	"os"
 
+	"golang.org/x/exp/slog"
+
 	"go.yhsif.com/pandablog/app"
 	"go.yhsif.com/pandablog/app/lib/timezone"
+	"go.yhsif.com/pandablog/app/logging"
 )
 
 func init() {
-	// Verbose logging with file name and line number.
-	log.SetFlags(log.Lshortfile)
+	logging.InitJSON()
 	// Set the time zone.
 	timezone.Set()
 }
@@ -20,7 +20,8 @@ func init() {
 func main() {
 	handler, err := app.Boot()
 	if err != nil {
-		log.Fatalln(err.Error())
+		slog.Default().Error("Failed to boot", "err", err)
+		os.Exit(1)
 	}
 
 	// Start the web server.
@@ -29,6 +30,6 @@ func main() {
 		port = "8080"
 	}
 
-	fmt.Println("Web server running on port:", port)
-	log.Fatalln(http.ListenAndServe(":"+port, handler))
+	slog.Default().Info("Web server running", "port", port)
+	slog.Default().Info("Web server exited", "err", http.ListenAndServe(":"+port, handler))
 }
