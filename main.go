@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
+	"runtime/debug"
 
 	"golang.org/x/exp/slog"
 
@@ -18,6 +19,16 @@ func init() {
 }
 
 func main() {
+	if bi, ok := debug.ReadBuildInfo(); ok {
+		slog.Default().Debug(
+			"Read build info",
+			"string", bi.String(),
+			"json", bi,
+		)
+	} else {
+		slog.Default().Warn("Unable to read build info")
+	}
+
 	handler, err := app.Boot()
 	if err != nil {
 		slog.Default().Error("Failed to boot", "err", err)
