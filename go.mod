@@ -11,7 +11,7 @@ require (
 	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/microcosm-cc/bluemonday v1.0.23
 	github.com/russross/blackfriday/v2 v2.1.0
-	go.yhsif.com/ctxslog v0.0.0-20230507063844-a760f1829463
+	go.yhsif.com/ctxslog v0.0.0-20230507072145-32072731fd3b
 	go.yhsif.com/stalecache v0.2.0
 	golang.org/x/crypto v0.8.0
 	golang.org/x/exp v0.0.0-20230425010034-47ecfdc1ba53
