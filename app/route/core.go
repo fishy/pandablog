@@ -63,7 +63,7 @@ func setupRouter(tmpl *htmltemplate.Engine) *router.Mux {
 			}
 			status, err = tmpl.ErrorTemplate(w, r, "base", errTemplate, vars)
 			if err != nil {
-				slog.Default().Error("Internal server error", "err", err)
+				slog.Error("Internal server error", "err", err)
 				http.Error(w, "500 internal server error", http.StatusInternalServerError)
 				return
 			}
@@ -72,7 +72,7 @@ func setupRouter(tmpl *htmltemplate.Engine) *router.Mux {
 		// Display server errors.
 		if status >= 500 {
 			if err != nil {
-				slog.Default().Error("Internal server error", "err", err)
+				slog.Error("Internal server error", "err", err)
 			}
 		}
 	}

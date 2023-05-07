@@ -2,46 +2,11 @@ package middleware
 
 import (
 	"net/http"
-	"net/netip"
-	"strings"
 	"time"
 
+	"go.yhsif.com/ctxslog"
 	"golang.org/x/exp/slog"
 )
-
-func realIP(r *http.Request) netip.Addr {
-	// First, try X-Forwarded-For header
-	// Note that cloud run appends the real ip to the end
-	xForwardedFor := r.Header.Get("x-forwarded-for")
-	split := strings.Split(xForwardedFor, ",")
-	for i := len(split) - 1; i >= 0; i-- {
-		ip := strings.TrimSpace(split[i])
-		addr, err := netip.ParseAddr(ip)
-		if err != nil {
-			slog.Default().Debug(
-				"Wrong forwarded ip",
-				"x-forwarded-for", xForwardedFor,
-				"ip", ip,
-			)
-			continue
-		}
-		if addr.IsPrivate() || addr.IsLoopback() {
-			continue
-		}
-		return addr
-	}
-
-	// Next, use the one from r.RemoteIP
-	if parsed, err := netip.ParseAddrPort(r.RemoteAddr); err != nil {
-		slog.Default().Debug(
-			"Cannot parse RemoteAddr",
-			"remoteAddr", r.RemoteAddr,
-		)
-		return netip.Addr{}
-	} else {
-		return parsed.Addr()
-	}
-}
 
 type responseWriterWrapper struct {
 	http.ResponseWriter
@@ -66,20 +31,20 @@ func (rww responseWriterWrapper) getCode() int {
 // LogRequest will log the HTTP requests.
 func (c *Handler) LogRequest(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ip := realIP(r)
+		ctx := ctxslog.Attach(
+			r.Context(),
+			"httpRequest", ctxslog.HTTPRequest(r, ctxslog.GCPRealIP),
+		)
 		rw := &responseWriterWrapper{ResponseWriter: w}
 		defer func(start time.Time) {
-			slog.Default().Info(
+			slog.InfoCtx(
+				ctx,
 				"request",
 				"duration", time.Since(start),
-				"method", r.Method,
-				"url", r.URL.String(),
-				"ip", ip.String(),
-				"userAgent", r.UserAgent(),
 				"code", rw.getCode(),
 			)
 		}(time.Now())
 
-		next.ServeHTTP(rw, r)
+		next.ServeHTTP(rw, r.WithContext(ctx))
 	})
 }

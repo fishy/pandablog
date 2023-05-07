@@ -71,14 +71,14 @@ func (c *AuthUtil) loginPost(w http.ResponseWriter, r *http.Request) (status int
 
 	allowedUsername := os.Getenv("PBB_USERNAME")
 	if len(allowedUsername) == 0 {
-		slog.Default().Error("Environment variable missing: PBB_USERNAME")
+		slog.ErrorCtx(r.Context(), "Environment variable missing: PBB_USERNAME")
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
 
 	hash := os.Getenv("PBB_PASSWORD_HASH")
 	if len(hash) == 0 {
-		slog.Default().Error("Environment variable missing: PBB_PASSWORD_HASH")
+		slog.ErrorCtx(r.Context(), "Environment variable missing: PBB_PASSWORD_HASH")
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
