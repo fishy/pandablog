@@ -8,22 +8,28 @@ import (
 )
 
 func InitJSON() {
-	slog.SetDefault(slog.New(ctxslog.ContextHandler(slog.HandlerOptions{
-		AddSource: true,
-		Level:     slog.LevelDebug,
-		ReplaceAttr: ctxslog.ChainReplaceAttr(
-			ctxslog.GCPKeys,
-			ctxslog.StringDuration,
-		),
-	}.NewJSONHandler(os.Stderr))))
+	slog.SetDefault(slog.New(ctxslog.ContextHandler(slog.NewJSONHandler(
+		os.Stderr,
+		&slog.HandlerOptions{
+			AddSource: true,
+			Level:     slog.LevelDebug,
+			ReplaceAttr: ctxslog.ChainReplaceAttr(
+				ctxslog.GCPKeys,
+				ctxslog.StringDuration,
+			),
+		}),
+	)))
 }
 
 func InitText() {
-	slog.SetDefault(slog.New(ctxslog.ContextHandler(slog.HandlerOptions{
-		AddSource: true,
-		Level:     slog.LevelDebug,
-		ReplaceAttr: ctxslog.ChainReplaceAttr(
-			ctxslog.StringDuration,
-		),
-	}.NewTextHandler(os.Stderr))))
+	slog.SetDefault(slog.New(ctxslog.ContextHandler(slog.NewTextHandler(
+		os.Stderr,
+		&slog.HandlerOptions{
+			AddSource: true,
+			Level:     slog.LevelDebug,
+			ReplaceAttr: ctxslog.ChainReplaceAttr(
+				ctxslog.StringDuration,
+			),
+		}),
+	)))
 }
