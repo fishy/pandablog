@@ -2,6 +2,8 @@ package router
 
 import (
 	"net/http"
+
+	"golang.org/x/exp/slog"
 )
 
 // handler is a internal handler.
@@ -13,6 +15,14 @@ type handler struct {
 // ServeHTTP handles all the errors from the HTTP handlers.
 func (fn handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	status, err := fn.HandlerFunc(w, r)
+	if err != nil {
+		slog.ErrorCtx(
+			r.Context(),
+			"ServeHTTP error",
+			"err", err,
+			"code", status,
+		)
+	}
 	fn.CustomServeHTTP(w, r, status, err)
 }
 
