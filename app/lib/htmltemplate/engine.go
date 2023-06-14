@@ -50,10 +50,7 @@ func (te *Engine) partialTemplate(w http.ResponseWriter, r *http.Request, mainTe
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
-	t, err = te.sanitizedContent(t, "footer", footer)
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
+	vars["footerHTML"] = te.RenderMarkdown(footer)
 
 	// Output the status code.
 	w.WriteHeader(statusCode)
@@ -87,13 +84,10 @@ func (te *Engine) Post(w http.ResponseWriter, r *http.Request, mainTemplate stri
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
-	t, err = te.sanitizedContent(t, "footer", footer)
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
+	vars["footerHTML"] = te.RenderMarkdown(footer)
 
 	// Parse the content.
-	t, err = te.sanitizedContent(t, "content", post.Content)
+	t, err = te.sanitizedContent(t, post.Content)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}

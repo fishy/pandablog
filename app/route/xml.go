@@ -171,7 +171,7 @@ func (c *XMLUtil) rss(w http.ResponseWriter, r *http.Request) (status int, err e
 	}
 
 	for _, v := range posts {
-		html := c.Render.SanitizedHTML(v.Post.Content)
+		html := c.Render.RenderMarkdown(v.Post.Content)
 		m.Items = append(m.Items, Item{
 			Title:   v.Title,
 			Link:    site.SiteURL() + "/" + v.FullURL(),
