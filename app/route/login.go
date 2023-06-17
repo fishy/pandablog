@@ -121,10 +121,16 @@ func (c *AuthUtil) loginPost(w http.ResponseWriter, r *http.Request) (status int
 		slog.ErrorCtx(r.Context(), "Login attempt failed.", slog.Group(
 			"login",
 			"method", "password",
-			"username", username,
-			"allowedUsername", allowedUsername,
-			"passwordMatch", passMatch,
-			"mfaSuccess", mfaSuccess,
+			slog.Group(
+				"matched",
+				"password", passMatch,
+				"mfa", mfaSuccess,
+				slog.Group(
+					"username",
+					"got", username,
+					"want", allowedUsername,
+				),
+			),
 		))
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
