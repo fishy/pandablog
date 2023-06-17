@@ -2,7 +2,6 @@ package route
 
 import (
 	"encoding/base64"
-	"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -59,15 +58,18 @@ func (c *AuthUtil) loginPost(w http.ResponseWriter, r *http.Request) (status int
 	r.ParseForm()
 
 	// CSRF protection.
-	success := c.Sess.CSRF(r)
-	if !success {
+	if !c.Sess.CSRF(r) {
+		slog.ErrorCtx(r.Context(), "Login attempt failed.", slog.Group(
+			"login",
+			"csrfPassed", false,
+		))
 		return http.StatusBadRequest, nil
 	}
 
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	mfa := r.FormValue("mfa")
-	remember := r.FormValue("remember")
+	remember := r.FormValue("remember") == "on"
 
 	allowedUsername := os.Getenv("PBB_USERNAME")
 	if len(allowedUsername) == 0 {
@@ -116,19 +118,27 @@ func (c *AuthUtil) loginPost(w http.ResponseWriter, r *http.Request) (status int
 
 	// If the username and password don't match, then just redirect.
 	if username != allowedUsername || !passMatch || !mfaSuccess {
-		fmt.Printf("Login attempt failed. Username: %v (expected: %v) | Password match: %v | MFA success: %v\n", username, allowedUsername, passMatch, mfaSuccess)
+		slog.ErrorCtx(r.Context(), "Login attempt failed.", slog.Group(
+			"login",
+			"method", "password",
+			"username", username,
+			"allowedUsername", allowedUsername,
+			"passwordMatch", passMatch,
+			"mfaSuccess", mfaSuccess,
+		))
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
 
-	fmt.Printf("Login attempt successful.\n")
+	slog.WarnCtx(r.Context(), "Login attempt successful.", slog.Group(
+		"login",
+		"method", "password",
+		"mfa", len(mfakey) > 0,
+		"remember", remember,
+	))
 
 	c.Sess.SetUser(r, username)
-	if remember == "on" {
-		c.Sess.RememberMe(r, true)
-	} else {
-		c.Sess.RememberMe(r, false)
-	}
+	c.Sess.RememberMe(r, remember)
 
 	http.Redirect(w, r, "/dashboard", http.StatusFound)
 	return
