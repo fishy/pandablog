@@ -8,7 +8,7 @@ import (
 )
 
 func InitJSON() {
-	slog.SetDefault(slog.New(ctxslog.ContextHandler(ctxslog.JSONCallstackHandler(
+	logger := slog.New(ctxslog.ContextHandler(ctxslog.JSONCallstackHandler(
 		slog.NewJSONHandler(
 			os.Stderr,
 			&slog.HandlerOptions{
@@ -21,7 +21,11 @@ func InitJSON() {
 			},
 		),
 		slog.LevelError,
-	))))
+	)))
+	if v, ok := os.LookupEnv("VERSION_TAG"); ok {
+		logger = logger.With(slog.String("v", v))
+	}
+	slog.SetDefault(logger)
 }
 
 func InitText() {
