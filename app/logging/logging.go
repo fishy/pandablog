@@ -8,7 +8,7 @@ import (
 )
 
 func InitJSON() {
-	slog.SetDefault(slog.New(ctxslog.ContextHandler(ctxslog.CallstackHandler(
+	slog.SetDefault(slog.New(ctxslog.ContextHandler(ctxslog.JSONCallstackHandler(
 		slog.NewJSONHandler(
 			os.Stderr,
 			&slog.HandlerOptions{
@@ -25,7 +25,7 @@ func InitJSON() {
 }
 
 func InitText() {
-	slog.SetDefault(slog.New(ctxslog.ContextHandler(ctxslog.CallstackHandler(
+	slog.SetDefault(slog.New(ctxslog.ContextHandler(ctxslog.TextCallstackHandler(
 		slog.NewTextHandler(
 			os.Stderr,
 			&slog.HandlerOptions{
