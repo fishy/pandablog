@@ -2,12 +2,12 @@ package route
 
 import (
 	"encoding/base64"
+	"log/slog"
 	"net/http"
 	"os"
 	"strconv"
 
 	"github.com/matryer/way"
-	"golang.org/x/exp/slog"
 
 	"go.yhsif.com/pandablog/app/lib/envdetect"
 	"go.yhsif.com/pandablog/app/lib/passhash"

@@ -1,6 +1,6 @@
 module go.yhsif.com/pandablog
 
-go 1.20
+go 1.21
 
 require (
 	cloud.google.com/go/storage v1.30.1
@@ -11,10 +11,9 @@ require (
 	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/microcosm-cc/bluemonday v1.0.24
 	github.com/russross/blackfriday/v2 v2.1.0
-	go.yhsif.com/ctxslog v0.0.0-20230619054812-a528b6efdfd2
+	go.yhsif.com/ctxslog v1.0.0-alpha.2
 	go.yhsif.com/stalecache v0.2.0
 	golang.org/x/crypto v0.10.0
-	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1
 	golang.org/x/term v0.9.0
 	jaytaylor.com/html2text v0.0.0-20230321000545-74c2419ad056
 )

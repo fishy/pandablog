@@ -14,6 +14,7 @@ config?=
 # Load the environment variables.
 include $(config).env
 
+go=go
 gcloud=gcloud --project=$(PBB_GCP_PROJECT_ID)
 docker_image=$(PBB_GCP_REGION)-docker.pkg.dev/$(PBB_GCP_PROJECT_ID)/${PBB_GCP_IMAGE_NAME}/${PBB_GCP_IMAGE_NAME}
 full_git_version=$(shell git rev-parse HEAD)
@@ -60,19 +61,19 @@ gcp-push: test
 privatekey:
 	@echo Generating private key for encrypting sessions.
 	@echo You can paste private key this into your .env file:
-	@go run cmd/privatekey/main.go
+	@$(go) run cmd/privatekey/main.go
 
 .PHONY: mfa
 mfa:
 	@echo Generating MFA for user.
 	@echo You can paste this into your .env file:
-	@go run cmd/mfa/main.go
+	@$(go) run cmd/mfa/main.go
 
 .PHONY: passhash
 passhash:
 	@echo Generating password hash.
 	@echo You can paste this into your .env file:
-	@go run cmd/passhash/main.go
+	@$(go) run cmd/passhash/main.go
 
 .PHONY: local-init
 local-init:
@@ -83,9 +84,9 @@ local-init:
 .PHONY: local-run
 local-run:
 	@echo Starting local server.
-	LOCALDEV=true go run main.go
+	LOCALDEV=true $(go) run main.go
 
 .PHONY: test
 test:
-	go vet ./...
-	go test -race ./...
+	$(go) vet ./...
+	$(go) test -race ./...

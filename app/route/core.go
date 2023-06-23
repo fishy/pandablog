@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"log/slog"
 	"net/http"
 	"strings"
-
-	"golang.org/x/exp/slog"
 
 	"go.yhsif.com/pandablog/app/lib/datastorage"
 	"go.yhsif.com/pandablog/app/lib/htmltemplate"

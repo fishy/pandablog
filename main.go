@@ -1,11 +1,10 @@
 package main
 
 import (
+	"log/slog"
 	"net/http"
 	"os"
 	"runtime/debug"
-
-	"golang.org/x/exp/slog"
 
 	"go.yhsif.com/pandablog/app"
 	"go.yhsif.com/pandablog/app/lib/timezone"

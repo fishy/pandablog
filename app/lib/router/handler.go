@@ -1,9 +1,8 @@
 package router
 
 import (
+	"log/slog"
 	"net/http"
-
-	"golang.org/x/exp/slog"
 )
 
 // handler is a internal handler.

@@ -1,45 +1,36 @@
 package logging
 
 import (
+	"log/slog"
 	"os"
 
 	"go.yhsif.com/ctxslog"
-	"golang.org/x/exp/slog"
 )
 
 func InitJSON() {
-	logger := slog.New(ctxslog.ContextHandler(ctxslog.JSONCallstackHandler(
-		slog.NewJSONHandler(
-			os.Stderr,
-			&slog.HandlerOptions{
-				AddSource: true,
-				Level:     slog.LevelDebug,
-				ReplaceAttr: ctxslog.ChainReplaceAttr(
-					ctxslog.GCPKeys,
-					ctxslog.StringDuration,
-				),
-			},
-		),
-		slog.LevelError,
-	)))
+	logger := ctxslog.New(
+		ctxslog.WithAddSource(true),
+		ctxslog.WithLevel(slog.LevelDebug),
+		ctxslog.WithCallstack(slog.LevelError),
+		ctxslog.WithReplaceAttr(ctxslog.ChainReplaceAttr(
+			ctxslog.GCPKeys,
+			ctxslog.StringDuration,
+		)),
+	)
 	if v, ok := os.LookupEnv("VERSION_TAG"); ok {
 		logger = logger.With(slog.String("v", v))
+		slog.SetDefault(logger)
 	}
-	slog.SetDefault(logger)
 }
 
 func InitText() {
-	slog.SetDefault(slog.New(ctxslog.ContextHandler(ctxslog.TextCallstackHandler(
-		slog.NewTextHandler(
-			os.Stderr,
-			&slog.HandlerOptions{
-				AddSource: true,
-				Level:     slog.LevelDebug,
-				ReplaceAttr: ctxslog.ChainReplaceAttr(
-					ctxslog.StringDuration,
-				),
-			},
-		),
-		slog.LevelError,
-	))))
+	ctxslog.New(
+		ctxslog.WithText,
+		ctxslog.WithAddSource(true),
+		ctxslog.WithLevel(slog.LevelDebug),
+		ctxslog.WithCallstack(slog.LevelError),
+		ctxslog.WithReplaceAttr(ctxslog.ChainReplaceAttr(
+			ctxslog.StringDuration,
+		)),
+	)
 }

@@ -1,11 +1,11 @@
 package middleware
 
 import (
+	"log/slog"
 	"net/http"
 	"time"
 
 	"go.yhsif.com/ctxslog"
-	"golang.org/x/exp/slog"
 )
 
 type responseWriterWrapper struct {
