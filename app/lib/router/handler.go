@@ -15,7 +15,7 @@ type handler struct {
 func (fn handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	status, err := fn.HandlerFunc(w, r)
 	if err != nil {
-		slog.ErrorCtx(
+		slog.ErrorContext(
 			r.Context(),
 			"ServeHTTP error",
 			"err", err,

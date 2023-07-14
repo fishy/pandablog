@@ -37,7 +37,7 @@ func (c *Handler) LogRequest(next http.Handler) http.Handler {
 		)
 		rw := &responseWriterWrapper{ResponseWriter: w}
 		defer func(start time.Time) {
-			slog.InfoCtx(
+			slog.InfoContext(
 				ctx,
 				"request",
 				"duration", time.Since(start),

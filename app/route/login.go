@@ -59,7 +59,7 @@ func (c *AuthUtil) loginPost(w http.ResponseWriter, r *http.Request) (status int
 
 	// CSRF protection.
 	if !c.Sess.CSRF(r) {
-		slog.ErrorCtx(r.Context(), "Login attempt failed.", slog.Group(
+		slog.ErrorContext(r.Context(), "Login attempt failed.", slog.Group(
 			"login",
 			"csrfPassed", false,
 		))
@@ -73,14 +73,14 @@ func (c *AuthUtil) loginPost(w http.ResponseWriter, r *http.Request) (status int
 
 	allowedUsername := os.Getenv("PBB_USERNAME")
 	if len(allowedUsername) == 0 {
-		slog.ErrorCtx(r.Context(), "Environment variable missing: PBB_USERNAME")
+		slog.ErrorContext(r.Context(), "Environment variable missing: PBB_USERNAME")
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
 
 	hash := os.Getenv("PBB_PASSWORD_HASH")
 	if len(hash) == 0 {
-		slog.ErrorCtx(r.Context(), "Environment variable missing: PBB_PASSWORD_HASH")
+		slog.ErrorContext(r.Context(), "Environment variable missing: PBB_PASSWORD_HASH")
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
@@ -118,7 +118,7 @@ func (c *AuthUtil) loginPost(w http.ResponseWriter, r *http.Request) (status int
 
 	// If the username and password don't match, then just redirect.
 	if username != allowedUsername || !passMatch || !mfaSuccess {
-		slog.ErrorCtx(r.Context(), "Login attempt failed.", slog.Group(
+		slog.ErrorContext(r.Context(), "Login attempt failed.", slog.Group(
 			"login",
 			"method", "password",
 			slog.Group(
@@ -136,7 +136,7 @@ func (c *AuthUtil) loginPost(w http.ResponseWriter, r *http.Request) (status int
 		return
 	}
 
-	slog.WarnCtx(r.Context(), "Login attempt successful.", slog.Group(
+	slog.WarnContext(r.Context(), "Login attempt successful.", slog.Group(
 		"login",
 		"method", "password",
 		"mfa", len(mfakey) > 0,
