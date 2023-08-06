@@ -132,14 +132,18 @@ func (c *XMLUtil) rss(w http.ResponseWriter, r *http.Request) (status int, err e
 		Items         []Item   `xml:"channel>item"`
 	}
 
+	lang := "en"
+	if site.Lang != "" {
+		lang = site.Lang
+	}
 	m := &Sitemap{
 		Version:       "2.0",
 		Atom:          "http://www.w3.org/2005/Atom",
 		Title:         site.SiteTitle(),
 		Link:          site.SiteURL(),
 		Description:   site.Description,
-		Generator:     "Polar Bear Blog",
-		Language:      "en-us",
+		Generator:     "Panda Blog",
+		Language:      lang,
 		LastBuildDate: time.Now().Format(time.RFC1123Z),
 		AtomLink: AtomLink{
 			Href: site.SiteURL() + "/rss.xml",
