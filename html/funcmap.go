@@ -61,6 +61,9 @@ func FuncMap(
 	fm["SiteFavicon"] = func() string {
 		return site.Favicon
 	}
+	fm["SiteLang"] = func() string {
+		return site.Lang
+	}
 	fm["Authenticated"] = func() bool {
 		// If user is not authenticated, don't allow them to access the page.
 		_, loggedIn := sess.User(r)

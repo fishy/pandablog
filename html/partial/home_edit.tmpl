@@ -29,6 +29,13 @@
         <input type="text" name="loginurl" value="{{.loginurl}}" id="id_loginurl" required>
     </p>
     <p>
+        <label for="id_lang">Site default lang:</label>
+        <input type="text" name="lang" value="{{.lang}}" id="id_lang">
+        <span class="helptext">
+            (ex. 'en' or 'en-US'. <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang" target="_blank">Learn more</a>)
+        </span>
+    </p>
+    <p>
         <label for="id_homeurl">Alternative Home URL:</label>
         <input type="text" name="homeurl" value="{{.homeurl}}" id="id_homeurl">
         <span class="helptext">Optional if you want a different home URL and this site is only for blog.</span>

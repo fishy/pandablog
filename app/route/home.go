@@ -37,6 +37,7 @@ func (c *HomePost) show(w http.ResponseWriter, r *http.Request) (status int, err
 	}
 
 	vars := make(map[string]any)
+	vars["siteLang"] = site.Lang
 	return c.Render.Post(w, r, "base", p, vars)
 }
 
@@ -70,6 +71,7 @@ func (c *HomePost) edit(w http.ResponseWriter, r *http.Request) (status int, err
 	vars["cactus"] = site.CactusSiteName
 	vars["footer"] = site.FooterMarkdown()
 	vars["isodate"] = site.ISODate
+	vars["lang"] = site.Lang
 
 	return c.Render.Template(w, r, "dashboard", "home_edit", vars)
 }
@@ -101,6 +103,7 @@ func (c *HomePost) update(w http.ResponseWriter, r *http.Request) (status int, e
 	site.DisqusID = r.FormValue("disqus")
 	site.CactusSiteName = r.FormValue("cactus")
 	site.ISODate = (r.FormValue("isodate") == "on")
+	site.Lang = r.FormValue("lang")
 	footer := r.FormValue("footer")
 	site.Footer = &footer
 	site.Updated = time.Now()

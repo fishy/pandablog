@@ -81,6 +81,7 @@ func (c *AdminPost) store(w http.ResponseWriter, r *http.Request) (status int, e
 		return http.StatusInternalServerError, err
 	}
 	p.Timestamp = ts
+	p.Lang = r.FormValue("lang")
 	p.Content = r.FormValue("content")
 	p.Tags = p.Tags.Split(r.FormValue("tags"))
 	p.Page = r.FormValue("is_page") == "on"
@@ -119,6 +120,7 @@ func (c *AdminPost) edit(w http.ResponseWriter, r *http.Request) (status int, er
 	vars["url"] = p.URL
 	vars["canonical"] = p.Canonical
 	vars["timestamp"] = p.Timestamp
+	vars["lang"] = p.Lang
 	vars["body"] = p.Content
 	vars["tags"] = p.Tags.String()
 	vars["page"] = p.Page
@@ -162,6 +164,7 @@ func (c *AdminPost) update(w http.ResponseWriter, r *http.Request) (status int, 
 		return http.StatusInternalServerError, err
 	}
 	p.Timestamp = ts
+	p.Lang = r.FormValue("lang")
 	p.Content = r.FormValue("content")
 	p.Tags = p.Tags.Split(r.FormValue("tags"))
 	p.Page = r.FormValue("is_page") == "on"

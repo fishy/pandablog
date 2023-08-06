@@ -8,7 +8,7 @@
     <p>
         <label for="id_slug">Permalink:</label>
         <input type="text" name="slug" required id="id_slug">
-        <span class="helptext">eg: 'why-i-like-bears'</span>
+        <span class="helptext">(ex. 'why-i-like-bears')</span>
     </p>
     <p>
         <label for="id_canonical_url">Canonical url (optional):</label>
@@ -20,7 +20,14 @@
     <p>
         <label for="id_published_date">Date:</label>
         <input type="date" name="published_date" id="id_published_date">
-        <span class="helptext">eg: '2021-03-31' (leave empty to post now)</span>
+        <span class="helptext">(ex. '2021-03-31', leave empty to post now)</span>
+    </p>
+    <p>
+        <label for="id_lang">Override site default lang:</label>
+        <input type="text" name="lang" value="{{.lang}}" id="id_lang">
+        <span class="helptext">
+            (ex. 'en' or 'en-US'. <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang" target="_blank">Learn more</a>)
+        </span>
     </p>
     <p>
         <label for="id_content">Content (markdown):</label>

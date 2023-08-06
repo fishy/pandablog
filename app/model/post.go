@@ -51,6 +51,7 @@ type Post struct {
 	Created   time.Time `json:"created"`
 	Updated   time.Time `json:"updated"`
 	Timestamp time.Time `json:"timestamp"`
+	Lang      string    `json:"lang"`
 	Content   string    `json:"content"`
 	Published bool      `json:"published"`
 	Page      bool      `json:"page"`
@@ -60,6 +61,7 @@ type Post struct {
 // PostWithID -
 type PostWithID struct {
 	Post
+
 	ID string `json:"id"`
 }
 

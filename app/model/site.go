@@ -32,6 +32,7 @@ type Site struct {
 	StackEdit         bool            `json:"stackedit"`
 	Prism             bool            `json:"prism"`
 	ISODate           bool            `json:"isodate"`
+	Lang              string          `json:"lang"`
 	Posts             map[string]Post `json:"posts"`
 
 	Footer *string `json:"footer"`

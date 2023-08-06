@@ -58,6 +58,8 @@ func (c *Post) index(w http.ResponseWriter, r *http.Request) (status int, err er
 		vars["posts"] = site.PublishedPosts()
 	}
 
+	vars["siteLang"] = site.Lang
+
 	return c.Render.Template(w, r, "base", "bloglist_index", vars)
 }
 
@@ -93,6 +95,8 @@ func (c *Post) show(w http.ResponseWriter, r *http.Request) (status int, err err
 	vars["id"] = p.ID
 	vars["posturl"] = p.URL
 	vars["metadescription"] = htmltemplate.PlaintextBlurb(p.Content)
+	vars["siteLang"] = site.Lang
+	vars["postLang"] = p.Lang
 
 	return c.Render.Post(w, r, "base", p.Post, vars)
 }

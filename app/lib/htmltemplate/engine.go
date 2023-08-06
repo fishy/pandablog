@@ -65,8 +65,13 @@ func (te *Engine) partialTemplate(w http.ResponseWriter, r *http.Request, mainTe
 
 // Post converts a site post from markdown to HTML and then outputs to response
 // writer. Returns an HTTP status code and an error if one occurs.
-func (te *Engine) Post(w http.ResponseWriter, r *http.Request, mainTemplate string,
-	post model.Post, vars map[string]any) (status int, err error) {
+func (te *Engine) Post(
+	w http.ResponseWriter,
+	r *http.Request,
+	mainTemplate string,
+	post model.Post,
+	vars map[string]any,
+) (status int, err error) {
 
 	// Display 404 if not found.
 	if post.URL == "" {

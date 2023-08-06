@@ -1,5 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{- if .postLang -}}
+{{.postLang}}
+{{- else -}}
+{{- if .siteLang -}}
+{{.siteLang}}
+{{- else -}}
+en
+{{- end -}}
+{{- end -}}
+">
 
 {{template "head" .}}
 
