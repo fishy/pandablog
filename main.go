@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log/slog"
 	"net/http"
 	"os"
@@ -28,7 +29,7 @@ func main() {
 		slog.Warn("Unable to read build info")
 	}
 
-	handler, err := app.Boot()
+	handler, err := app.Boot(context.Background())
 	if err != nil {
 		slog.Error("Failed to boot", "err", err)
 		os.Exit(1)

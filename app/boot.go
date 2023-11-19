@@ -2,7 +2,9 @@ package app
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 	"strconv"
@@ -10,6 +12,7 @@ import (
 
 	"github.com/alexedwards/scs/v2"
 
+	"go.yhsif.com/pandablog/app/lib/blocklist"
 	"go.yhsif.com/pandablog/app/lib/datastorage"
 	"go.yhsif.com/pandablog/app/lib/envdetect"
 	"go.yhsif.com/pandablog/app/lib/htmltemplate"
@@ -26,7 +29,7 @@ var (
 )
 
 // Boot -
-func Boot() (http.Handler, error) {
+func Boot(ctx context.Context) (http.Handler, error) {
 	// Set the storage and session environment variables.
 	sitePath := os.Getenv("PBB_SITE_PATH")
 	if len(sitePath) > 0 {
@@ -97,6 +100,9 @@ func Boot() (http.Handler, error) {
 	tm := html.NewTemplateManager(storage, sess)
 	tmpl := htmltemplate.New(tm, allowHTML)
 
+	// Load blocklist
+	b := loadBlocklist(ctx)
+
 	// Setup the routes.
 	c, err := route.Register(storage, sess, tmpl)
 	if err != nil {
@@ -104,7 +110,7 @@ func Boot() (http.Handler, error) {
 	}
 
 	// Set up the router and middleware.
-	site, err := c.Storage.Site.Load(context.Background())
+	site, err := c.Storage.Site.Load(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -115,8 +121,31 @@ func Boot() (http.Handler, error) {
 	mw = middleware.Head(mw)
 	mw = h.DisallowAnon(mw)
 	mw = sessionManager.LoadAndSave(mw)
+	mw = b.Middleware(mw)
 	mw = middleware.Gzip(mw)
 	mw = h.LogRequest(mw)
 
 	return mw, nil
+}
+
+func loadBlocklist(ctx context.Context) blocklist.Blocklist {
+	const path = "blocklist.yaml"
+	f, err := os.Open(path)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			// no blocklist, return an empty one
+			slog.InfoContext(ctx, "blocklist file does not exist", "path", path)
+			return blocklist.Blocklist{}
+		} else {
+			slog.ErrorContext(ctx, "failed to open blocklist file", "err", err, "path", path)
+			return blocklist.Blocklist{}
+		}
+	}
+	defer f.Close()
+	b, err := blocklist.ParseYAML(ctx, f)
+	if err != nil {
+		slog.ErrorContext(ctx, "failed to parse blocklist file", "err", err, "path", path)
+		return blocklist.Blocklist{}
+	}
+	return b
 }

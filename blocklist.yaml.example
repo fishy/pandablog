@@ -1,0 +1,19 @@
+# Copy this file into blocklist.yaml and make modifications to enable blocklist.
+
+# IP rules are either single ip (v4 or v6) or in CIDR format
+ip:
+# - 192.168.0.1     # single ipv4
+# - 192.168.0.1/24  # CIDR v4
+# - "2001:db8::68"  # single ipv6
+# - "2001:db8::/32" # CIDR v6
+
+# User-Agent rules are Go regexps (see https://pkg.go.dev/regexp/syntax)
+ua:
+# - ".*foo.*"  # Any user-agent with "foo" in it will match
+
+# By default, we use http status code 403 for blocked requests.
+# code: 403
+
+# By default, we use the default message from the code for blocked requests,
+# you can customize the message here.
+# message: "go away"

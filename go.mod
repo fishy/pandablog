@@ -11,10 +11,11 @@ require (
 	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/microcosm-cc/bluemonday v1.0.26
 	github.com/russross/blackfriday/v2 v2.1.0
-	go.yhsif.com/ctxslog v1.0.0
+	go.yhsif.com/ctxslog v1.1.0-beta.1
 	go.yhsif.com/stalecache v0.2.0
 	golang.org/x/crypto v0.14.0
 	golang.org/x/term v0.13.0
+	gopkg.in/yaml.v3 v3.0.1
 	jaytaylor.com/html2text v0.0.0-20230321000545-74c2419ad056
 )
 
