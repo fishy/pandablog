@@ -81,6 +81,7 @@ func (b *Blocklist) Parse(ctx context.Context) {
 		p, err := parsePrefixOrSingleIP(ip)
 		if err != nil {
 			slog.WarnContext(ctx, "Failed to parse ip", "err", err, "ip", ip)
+			continue
 		}
 		b.ipPrefixes = append(b.ipPrefixes, withRaw[netip.Prefix]{
 			raw: ip,
@@ -93,6 +94,7 @@ func (b *Blocklist) Parse(ctx context.Context) {
 		ua, err := regexp.Compile(str)
 		if err != nil {
 			slog.WarnContext(ctx, "Failed to parse user-agent regexp", "err", err, "ua", str)
+			continue
 		}
 		b.ua = append(b.ua, withRaw[*regexp.Regexp]{
 			raw: str,
