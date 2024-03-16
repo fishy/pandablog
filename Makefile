@@ -48,6 +48,8 @@ gcp-push: test
 		--platform managed \
 		--allow-unauthenticated \
 		--region ${PBB_GCP_REGION} ${PBB_GCP_CLOUDRUN_NAME} \
+		--cpu 1 \
+		--memory 128Mi \
 		--update-env-vars VERSION_TAG=$(version_tag) \
 		--update-env-vars PBB_USERNAME=${PBB_USERNAME} \
 		--update-env-vars PBB_SESSION_KEY=${PBB_SESSION_KEY} \
