@@ -93,6 +93,9 @@ func Boot(ctx context.Context) (http.Handler, error) {
 	sessionManager := scs.New()
 	sessionManager.Lifetime = 24 * time.Hour
 	sessionManager.Cookie.Persist = false
+	if !envdetect.RunningLocalDev() {
+		sessionManager.Cookie.Secure = true
+	}
 	sessionManager.Store = store
 	sess := websession.New(sessionName, sessionManager)
 
