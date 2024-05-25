@@ -46,6 +46,8 @@ func Register(storage *datastorage.Storage, sess *websession.Session, tmpl *html
 	registerAdminPost(&AdminPost{c})
 	registerPost(&Post{c}, site.HomeURL)
 
+	c.registerBridyFedRedirect()
+
 	return c, nil
 }
 

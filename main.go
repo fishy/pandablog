@@ -8,12 +8,17 @@ import (
 	"runtime/debug"
 
 	"go.yhsif.com/pandablog/app"
+	"go.yhsif.com/pandablog/app/lib/envdetect"
 	"go.yhsif.com/pandablog/app/lib/timezone"
 	"go.yhsif.com/pandablog/app/logging"
 )
 
 func init() {
-	logging.InitJSON()
+	if envdetect.RunningLocalDev() {
+		logging.InitText()
+	} else {
+		logging.InitJSON()
+	}
 	// Set the time zone.
 	timezone.Set()
 }

@@ -69,6 +69,8 @@ func (c *HomePost) edit(w http.ResponseWriter, r *http.Request) (status int, err
 	vars["googleanalytics"] = site.GoogleAnalyticsID
 	vars["disqus"] = site.DisqusID
 	vars["cactus"] = site.CactusSiteName
+	vars["bridgy_fed_redirect"] = site.BridgyFedRedirect
+	vars["bridgy_fed_web"] = site.BridgyFedWeb
 	vars["footer"] = site.FooterMarkdown()
 	vars["isodate"] = site.ISODate
 	vars["lang"] = site.Lang
@@ -102,6 +104,8 @@ func (c *HomePost) update(w http.ResponseWriter, r *http.Request) (status int, e
 	site.GoogleAnalyticsID = r.FormValue("googleanalytics")
 	site.DisqusID = r.FormValue("disqus")
 	site.CactusSiteName = r.FormValue("cactus")
+	site.BridgyFedRedirect = r.FormValue("bridgy_fed_redirect")
+	site.BridgyFedWeb = r.FormValue("bridgy_fed_web")
 	site.ISODate = (r.FormValue("isodate") == "on")
 	site.Lang = r.FormValue("lang")
 	footer := r.FormValue("footer")

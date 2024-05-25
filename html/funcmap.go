@@ -37,7 +37,6 @@ func FuncMap(
 		return site.PublishedPages()
 	}
 	fm["HomeURL"] = func() string {
-		site := site
 		if site.HomeURL != "" {
 			return site.HomeURL
 		}
@@ -86,6 +85,9 @@ func FuncMap(
 			return ""
 		}
 		return site.CactusSiteName
+	}
+	fm["BridgyFedWeb"] = func() string {
+		return site.BridgyFedWeb
 	}
 	fm["MFAEnabled"] = func() bool {
 		return len(os.Getenv("PBB_MFA_KEY")) > 0

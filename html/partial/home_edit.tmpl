@@ -60,6 +60,16 @@
         <span class="helptext">Optional if you want comments through <a href="https://cactus.chat/">Cactus</a>.</span>
     </p>
     <p>
+        <label for="id_bridgy_fed_redirect">Bridgy Fed redirect domain:</label>
+        <input type="text" name="bridgy_fed_redirect" value="{{.bridgy_fed_redirect}}" id="id_bridgy_fed_redirect">
+        <span class="helptext">Optional if you want to use <a href="https://fed.brid.gy/docs#fediverse-enhanced">Bridgy Fed</a> (ex. fed.brid.gy).</span>
+    </p>
+    <p>
+        <label for="id_bridgy_fed_web">Bridgy Fed web domain:</label>
+        <input type="text" name="bridgy_fed_web" value="{{.bridgy_fed_web}}" id="id_bridgy_fed_web">
+        <span class="helptext">Optional if you want to use <a href="https://fed.brid.gy/docs#mastodon-link-verification">Bridgy Fed</a> (ex. web.brid.gy).</span>
+    </p>
+    <p>
         <label for="id_description">Site description:</label>
         <textarea name="pdescription" cols="40" rows="3" id="id_description">{{.pdescription}}</textarea>
     </p>
