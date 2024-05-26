@@ -94,7 +94,7 @@ func (c *AdminPost) store(w http.ResponseWriter, r *http.Request) (status int, e
 	}
 
 	http.Redirect(w, r, "/dashboard/posts/"+id.String(), http.StatusFound)
-	return
+	return http.StatusFound, nil
 }
 
 func (c *AdminPost) edit(w http.ResponseWriter, r *http.Request) (status int, err error) {
@@ -177,7 +177,7 @@ func (c *AdminPost) update(w http.ResponseWriter, r *http.Request) (status int, 
 	}
 
 	http.Redirect(w, r, "/dashboard/posts/"+ID, http.StatusFound)
-	return
+	return http.StatusFound, nil
 }
 
 func (c *AdminPost) destroy(w http.ResponseWriter, r *http.Request) (status int, err error) {
@@ -200,5 +200,5 @@ func (c *AdminPost) destroy(w http.ResponseWriter, r *http.Request) (status int,
 	}
 
 	http.Redirect(w, r, "/dashboard/posts", http.StatusFound)
-	return
+	return http.StatusFound, nil
 }

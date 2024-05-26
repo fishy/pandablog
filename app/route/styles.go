@@ -57,5 +57,5 @@ func (c *Styles) update(w http.ResponseWriter, r *http.Request) (status int, err
 	}
 
 	http.Redirect(w, r, "/dashboard/styles", http.StatusFound)
-	return
+	return http.StatusFound, nil
 }

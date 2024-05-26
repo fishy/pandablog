@@ -35,8 +35,8 @@ type Site struct {
 	Lang              string          `json:"lang"`
 	Posts             map[string]Post `json:"posts"`
 
-	BridgyFedRedirect string `json:"bridgyFedDomain"`
-	BridgyFedWeb      string `json:"bridgyFedWeb"`
+	BridgyFedDomain string `json:"bridgyFedDomain"`
+	BridgyFedWeb    string `json:"bridgyFedWeb"`
 
 	Footer *string `json:"footer"`
 

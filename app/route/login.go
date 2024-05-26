@@ -75,14 +75,14 @@ func (c *AuthUtil) loginPost(w http.ResponseWriter, r *http.Request) (status int
 	if len(allowedUsername) == 0 {
 		slog.ErrorContext(r.Context(), "Environment variable missing: PBB_USERNAME")
 		http.Redirect(w, r, "/", http.StatusFound)
-		return
+		return http.StatusFound, nil
 	}
 
 	hash := os.Getenv("PBB_PASSWORD_HASH")
 	if len(hash) == 0 {
 		slog.ErrorContext(r.Context(), "Environment variable missing: PBB_PASSWORD_HASH")
 		http.Redirect(w, r, "/", http.StatusFound)
-		return
+		return http.StatusFound, nil
 	}
 
 	// Get the MFA key - if the environment variable doesn't exist, then
@@ -93,13 +93,12 @@ func (c *AuthUtil) loginPost(w http.ResponseWriter, r *http.Request) (status int
 		imfa := 0
 		imfa, err = strconv.Atoi(mfa)
 		if err != nil {
-			http.Redirect(w, r, "/", http.StatusFound)
-			return
+			mfaSuccess = false
 		}
 
 		mfaSuccess, err = totp.Authenticate(imfa, mfakey)
 		if err != nil {
-			return http.StatusInternalServerError, err
+			mfaSuccess = false
 		}
 	}
 
@@ -133,7 +132,7 @@ func (c *AuthUtil) loginPost(w http.ResponseWriter, r *http.Request) (status int
 			),
 		))
 		http.Redirect(w, r, "/", http.StatusFound)
-		return
+		return http.StatusFound, nil
 	}
 
 	slog.WarnContext(r.Context(), "Login attempt successful.", slog.Group(
@@ -147,12 +146,12 @@ func (c *AuthUtil) loginPost(w http.ResponseWriter, r *http.Request) (status int
 	c.Sess.RememberMe(r, remember)
 
 	http.Redirect(w, r, "/dashboard", http.StatusFound)
-	return
+	return http.StatusFound, nil
 }
 
 func (c *AuthUtil) logout(w http.ResponseWriter, r *http.Request) (status int, err error) {
 	c.Sess.Logout(r)
 
 	http.Redirect(w, r, "/", http.StatusFound)
-	return
+	return http.StatusFound, nil
 }

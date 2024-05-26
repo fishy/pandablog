@@ -1,8 +1,6 @@
 package route
 
 import (
-	"fmt"
-	"io"
 	"log/slog"
 	"net/http"
 	"net/url"
@@ -16,7 +14,7 @@ func (c *Core) registerBridyFedRedirect() {
 			slog.ErrorContext(r.Context(), "failed to load site", "err", err)
 			return http.StatusInternalServerError, err
 		}
-		domain := site.BridgyFedRedirect
+		domain := site.BridgyFedDomain
 		if domain == "" {
 			return http.StatusNotFound, nil
 		}
@@ -31,9 +29,7 @@ func (c *Core) registerBridyFedRedirect() {
 			Path:     r.URL.Path,
 			RawQuery: r.Form.Encode(),
 		}).String()
-		w.Header().Set("Location", url)
-		w.WriteHeader(status)
-		io.WriteString(w, fmt.Sprintf("%s: %s", http.StatusText(status), url))
+		http.Redirect(w, r, url, status)
 		return status, nil
 	}
 	c.Router.Get("/.well-known/host-meta", redir)
