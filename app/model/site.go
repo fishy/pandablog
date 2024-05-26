@@ -2,7 +2,7 @@ package model
 
 import (
 	"fmt"
-	"sort"
+	"slices"
 	"sync"
 	"time"
 )
@@ -69,7 +69,7 @@ func (s *Site) FooterMarkdown() string {
 // PublishedPosts -
 func (s *Site) PublishedPosts() []Post {
 	s.postsLock.RLock()
-	arr := make(PostList, 0, len(s.Posts))
+	arr := make([]Post, 0, len(s.Posts))
 	for _, v := range s.Posts {
 		if v.Published && !v.Page {
 			arr = append(arr, v)
@@ -77,7 +77,9 @@ func (s *Site) PublishedPosts() []Post {
 	}
 	s.postsLock.RUnlock()
 
-	sort.Sort(sort.Reverse(arr))
+	slices.SortFunc(arr, func(left, right Post) int {
+		return left.Compare(right)
+	})
 
 	return arr
 }
@@ -85,7 +87,7 @@ func (s *Site) PublishedPosts() []Post {
 // PublishedPages -
 func (s *Site) PublishedPages() []Post {
 	s.postsLock.RLock()
-	var arr PostList
+	var arr []Post
 	for _, v := range s.Posts {
 		if v.Published && v.Page {
 			arr = append(arr, v)
@@ -93,15 +95,17 @@ func (s *Site) PublishedPages() []Post {
 	}
 	s.postsLock.RUnlock()
 
-	sort.Sort(sort.Reverse(arr))
+	slices.SortFunc(arr, func(left, right Post) int {
+		return left.Compare(right)
+	})
 
 	return arr
 }
 
 // PostsAndPages -
-func (s *Site) PostsAndPages(onlyPublished bool) PostWithIDList {
+func (s *Site) PostsAndPages(onlyPublished bool) []PostWithID {
 	s.postsLock.RLock()
-	arr := make(PostWithIDList, 0, len(s.Posts))
+	arr := make([]PostWithID, 0, len(s.Posts))
 	for k, v := range s.Posts {
 		if onlyPublished && !v.Published {
 			continue
@@ -112,7 +116,9 @@ func (s *Site) PostsAndPages(onlyPublished bool) PostWithIDList {
 	}
 	s.postsLock.RUnlock()
 
-	sort.Sort(sort.Reverse(arr))
+	slices.SortFunc(arr, func(left, right PostWithID) int {
+		return left.Compare(right.Post)
+	})
 
 	return arr
 }
@@ -140,7 +146,9 @@ func (s *Site) Tags(onlyPublished bool) TagList {
 	}
 
 	// Sort by name.
-	sort.Sort(arr)
+	slices.SortFunc(arr, func(left, right Tag) int {
+		return left.Compare(right)
+	})
 
 	return arr
 }

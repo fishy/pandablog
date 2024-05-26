@@ -5,44 +5,6 @@ import (
 	"time"
 )
 
-// PostWithIDList -
-type PostWithIDList []PostWithID
-
-func (t PostWithIDList) Len() int {
-	return len(t)
-}
-func (t PostWithIDList) Swap(i, j int) {
-	t[i], t[j] = t[j], t[i]
-}
-func (t PostWithIDList) Less(i, j int) bool {
-	if t[i].Timestamp.Equal(t[j].Timestamp) {
-		return t[i].Title > t[j].Title // Sort by title ASC
-	} else if t[i].Timestamp.Before(t[j].Timestamp) {
-		return true // Sort by timestamp, DESC
-	}
-
-	return false
-}
-
-// PostList -
-type PostList []Post
-
-func (t PostList) Len() int {
-	return len(t)
-}
-func (t PostList) Swap(i, j int) {
-	t[i], t[j] = t[j], t[i]
-}
-func (t PostList) Less(i, j int) bool {
-	if t[i].Timestamp.Equal(t[j].Timestamp) {
-		return t[i].Title > t[j].Title // Sort by title ASC
-	} else if t[i].Timestamp.Before(t[j].Timestamp) {
-		return true // Sort by timestamp, DESC
-	}
-
-	return false
-}
-
 // Post -
 type Post struct {
 	Title     string    `json:"title"`
@@ -70,18 +32,28 @@ func (p *Post) FullURL() string {
 	return p.URL
 }
 
+func (p Post) Compare(right Post) int {
+	if result := right.Timestamp.Compare(p.Timestamp); result != 0 {
+		// Sort by timestamp DESC
+		return result
+	}
+	// Otherwise, sort by title, ASC
+	switch {
+	default:
+		return 0
+	case p.Title < right.Title:
+		return -1
+	case p.Title > right.Title:
+		return 1
+	}
+}
+
 // TagList -
 type TagList []Tag
 
-func (t TagList) Len() int {
-	return len(t)
-}
-func (t TagList) Swap(i, j int) {
-	t[i], t[j] = t[j], t[i]
-}
-func (t TagList) Less(i, j int) bool {
-	return t[i].Name < t[j].Name
-}
+func (t TagList) Len() int           { return len(t) }
+func (t TagList) Swap(i, j int)      { t[i], t[j] = t[j], t[i] }
+func (t TagList) Less(i, j int) bool { return t[i].Compare(t[j]) < 0 }
 
 // String -
 func (t TagList) String() string {
