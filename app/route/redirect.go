@@ -3,7 +3,6 @@ package route
 import (
 	"log/slog"
 	"net/http"
-	"net/url"
 )
 
 func (c *Core) registerBridyFedRedirect() {
@@ -22,15 +21,12 @@ func (c *Core) registerBridyFedRedirect() {
 			slog.ErrorContext(r.Context(), "failed to parse form", "err", err)
 			return http.StatusInternalServerError, err
 		}
-		status = http.StatusFound
-		url := (&url.URL{
-			Scheme:   "https",
-			Host:     domain,
-			Path:     r.URL.Path,
-			RawQuery: r.Form.Encode(),
-		}).String()
-		http.Redirect(w, r, url, status)
-		return status, nil
+		url := site.BridgyFedURL(r.URL.Path, r.Form.Encode())
+		if url == "" {
+			return http.StatusNotFound, nil
+		}
+		http.Redirect(w, r, url, http.StatusFound)
+		return http.StatusFound, nil
 	}
 	c.Router.Get("/.well-known/host-meta", redir)
 	c.Router.Get("/.well-known/webfinger", redir)

@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"go.yhsif.com/ctxslog"
+
+	"go.yhsif.com/pandablog/app/lib/envdetect"
 )
 
 type responseWriterWrapper struct {
@@ -31,9 +33,13 @@ func (rww responseWriterWrapper) getCode() int {
 // LogRequest will log the HTTP requests.
 func (c *Handler) LogRequest(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		realIPFunc := ctxslog.GCPRealIP
+		if envdetect.RunningLocalDev() {
+			realIPFunc = ctxslog.RemoteAddrIP
+		}
 		ctx := ctxslog.Attach(
 			r.Context(),
-			"httpRequest", ctxslog.HTTPRequest(r, ctxslog.GCPRealIP),
+			"httpRequest", ctxslog.HTTPRequest(r, realIPFunc),
 		)
 		rw := &responseWriterWrapper{ResponseWriter: w}
 		defer func(start time.Time) {

@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"net/url"
 	"slices"
 	"sync"
 	"time"
@@ -12,40 +13,44 @@ const DefaultFooter = `Powered by [🐼](https://github.com/fishy/pandablog), th
 
 // Site -
 type Site struct {
-	Title             string          `json:"title"`
-	Subtitle          string          `json:"subtitle"`
-	Author            string          `json:"author"`
-	Favicon           string          `json:"favicon"`
-	Description       string          `json:"description"`
-	Scheme            string          `json:"scheme"`
-	URL               string          `json:"url"`
-	HomeURL           string          `json:"homeurl"`
-	LoginURL          string          `json:"loginurl"`
-	GoogleAnalyticsID string          `json:"googleanalytics"`
-	DisqusID          string          `json:"disqus"`
-	CactusSiteName    string          `json:"cactus"`
-	Created           time.Time       `json:"created"`
-	Updated           time.Time       `json:"updated"`
-	Content           string          `json:"content"` // Home content.
-	Styles            string          `json:"styles"`
-	StylesAppend      bool            `json:"stylesappend"`
-	StackEdit         bool            `json:"stackedit"`
-	Prism             bool            `json:"prism"`
-	ISODate           bool            `json:"isodate"`
-	Lang              string          `json:"lang"`
-	Posts             map[string]Post `json:"posts"`
+	Title             string    `json:"title"`
+	Subtitle          string    `json:"subtitle"`
+	Author            string    `json:"author"`
+	Favicon           string    `json:"favicon"`
+	Description       string    `json:"description"`
+	Scheme            string    `json:"scheme"`
+	URL               string    `json:"url"`
+	HomeURL           string    `json:"homeurl"`
+	LoginURL          string    `json:"loginurl"`
+	GoogleAnalyticsID string    `json:"googleanalytics"`
+	DisqusID          string    `json:"disqus"`
+	CactusSiteName    string    `json:"cactus"`
+	Created           time.Time `json:"created"`
+	Updated           time.Time `json:"updated"`
+	Content           string    `json:"content"` // Home content.
+	Styles            string    `json:"styles"`
+	StylesAppend      bool      `json:"stylesappend"`
+	StackEdit         bool      `json:"stackedit"`
+	Prism             bool      `json:"prism"`
+	ISODate           bool      `json:"isodate"`
+	Lang              string    `json:"lang"`
 
 	BridgyFedDomain string `json:"bridgyFedDomain"`
 	BridgyFedWeb    string `json:"bridgyFedWeb"`
 
 	Footer *string `json:"footer"`
 
-	postsLock sync.RWMutex `json:"-"`
+	postsLock sync.RWMutex    `json:"-"`
+	Posts     map[string]Post `json:"posts"`
 }
 
 // SiteURL -
-func (s *Site) SiteURL() string {
-	return fmt.Sprintf("%v://%v", s.Scheme, s.URL)
+func (s *Site) SiteURL(post *Post) string {
+	url := fmt.Sprintf("%v://%v", s.Scheme, s.URL)
+	if post != nil {
+		url += "/" + post.URL
+	}
+	return url
 }
 
 // SiteTitle -
@@ -192,4 +197,21 @@ func (s *Site) UpdatePost(id string, post *Post) {
 	} else {
 		s.Posts[id] = *post
 	}
+}
+
+// BridgyFedURL constructs bridgy fed url from BridgyFedDomain, for example
+// `"https://fed.brid.gy/"`, or `""` if BridgyFedDomain is unset.
+func (s *Site) BridgyFedURL(path, query string) string {
+	if s.BridgyFedDomain == "" {
+		return ""
+	}
+	if path == "" {
+		path = "/"
+	}
+	return (&url.URL{
+		Scheme:   "https",
+		Host:     s.BridgyFedDomain,
+		Path:     path,
+		RawQuery: query,
+	}).String()
 }

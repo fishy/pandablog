@@ -98,7 +98,7 @@ func (s *Storage) Save(site *model.Site) error {
 
 	if envdetect.RunningLocalDev() {
 		// Indent so the data is easy to read.
-		b, err = json.MarshalIndent(s.Site, "", "    ")
+		b, err = json.MarshalIndent(site, "", "    ")
 	} else {
 		b, err = json.Marshal(site)
 	}
@@ -107,8 +107,7 @@ func (s *Storage) Save(site *model.Site) error {
 		return err
 	}
 
-	err = s.datastorer.Save(b)
-	if err != nil {
+	if err := s.datastorer.Save(b); err != nil {
 		return err
 	}
 	s.Site.Update(site)

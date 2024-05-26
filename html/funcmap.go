@@ -43,7 +43,7 @@ func FuncMap(
 		return "/"
 	}
 	fm["SiteURL"] = func() string {
-		return site.SiteURL()
+		return site.SiteURL(nil /* post */)
 	}
 	fm["SiteTitle"] = func() string {
 		return site.SiteTitle()

@@ -28,10 +28,5 @@ func (s *LocalStorage) Load() ([]byte, error) {
 
 // Save writes a file to the filesystem and returns an error if one occurs.
 func (s *LocalStorage) Save(b []byte) error {
-	err := os.WriteFile(s.path, b, 0644)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return os.WriteFile(s.path, b, 0644)
 }

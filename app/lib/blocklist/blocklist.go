@@ -12,6 +12,8 @@ import (
 
 	"go.yhsif.com/ctxslog"
 	"gopkg.in/yaml.v3"
+
+	"go.yhsif.com/pandablog/app/lib/envdetect"
 )
 
 type withRaw[T any] struct {
@@ -106,6 +108,10 @@ func (b *Blocklist) Parse(ctx context.Context) {
 
 // Check returns an error if the request matches the blocklist.
 func (b Blocklist) Check(r *http.Request) error {
+	if envdetect.RunningLocalDev() {
+		return nil
+	}
+
 	ip := ctxslog.GCPRealIP(r)
 	for _, rule := range b.ipPrefixes {
 		if rule.v.Contains(ip) {

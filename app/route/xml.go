@@ -58,14 +58,14 @@ func (c *XMLUtil) sitemap(w http.ResponseWriter, r *http.Request) (status int, e
 
 	// Home page
 	m.URL = append(m.URL, URL{
-		Location:     site.SiteURL(),
+		Location:     site.SiteURL(nil /* post */),
 		LastModified: site.Updated.Format("2006-01-02"),
 	})
 
 	// Posts and pages
 	for _, v := range site.PostsAndPages(true) {
 		m.URL = append(m.URL, URL{
-			Location:     site.SiteURL() + "/" + v.FullURL(),
+			Location:     site.SiteURL(&v.Post),
 			LastModified: v.Timestamp.Format("2006-01-02"),
 		})
 	}
@@ -73,7 +73,7 @@ func (c *XMLUtil) sitemap(w http.ResponseWriter, r *http.Request) (status int, e
 	// Tags
 	for _, v := range site.Tags(true) {
 		m.URL = append(m.URL, URL{
-			Location:     site.SiteURL() + "/blog?q=" + v.Name,
+			Location:     site.SiteURL(nil /* post */) + "/blog?q=" + v.Name,
 			LastModified: v.Timestamp.Format("2006-01-02"),
 		})
 	}
@@ -140,13 +140,13 @@ func (c *XMLUtil) rss(w http.ResponseWriter, r *http.Request) (status int, err e
 		Version:       "2.0",
 		Atom:          "http://www.w3.org/2005/Atom",
 		Title:         site.SiteTitle(),
-		Link:          site.SiteURL(),
+		Link:          site.SiteURL(nil /* post */),
 		Description:   site.Description,
 		Generator:     "Panda Blog",
 		Language:      lang,
 		LastBuildDate: time.Now().Format(time.RFC1123Z),
 		AtomLink: AtomLink{
-			Href: site.SiteURL() + "/rss.xml",
+			Href: site.SiteURL(nil /* post */) + "/rss.xml",
 			Rel:  "self",
 			Type: "application/rss+xml",
 		},
@@ -178,9 +178,9 @@ func (c *XMLUtil) rss(w http.ResponseWriter, r *http.Request) (status int, err e
 		html := c.Render.RenderMarkdown(v.Post.Content)
 		m.Items = append(m.Items, Item{
 			Title:   v.Title,
-			Link:    site.SiteURL() + "/" + v.FullURL(),
+			Link:    site.SiteURL(&v.Post),
 			PubDate: v.Timestamp.Format(time.RFC1123Z),
-			GUID:    site.SiteURL() + "/" + v.FullURL(),
+			GUID:    site.SiteURL(&v.Post),
 			Description: Cdata{
 				Content: string(html),
 			},

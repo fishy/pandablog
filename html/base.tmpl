@@ -67,6 +67,12 @@ en
         </small>
         {{end}}
 
+        {{if .bridgyFed}}
+        <div style="display:none">
+          <a class="u-bridgy-fed" href="{{.bridgyFed}}" hidden="from-humans"></a>
+        </div>
+        {{end}}
+
         {{if and .pubdate DisqusID}}
         <div id="disqus_thread"></div>
         {{end}}

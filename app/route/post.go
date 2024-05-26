@@ -97,6 +97,7 @@ func (c *Post) show(w http.ResponseWriter, r *http.Request) (status int, err err
 	vars["metadescription"] = htmltemplate.PlaintextBlurb(p.Content)
 	vars["siteLang"] = site.Lang
 	vars["postLang"] = p.Lang
+	vars["bridgyFed"] = site.BridgyFedURL("" /* path */, "" /* query */)
 
 	return c.Render.Post(w, r, "base", p.Post, vars)
 }
