@@ -120,8 +120,8 @@ go.opentelemetry.io/otel/sdk v1.22.0 h1:6coWHw9xw7EfClIC/+O31R8IY3/+EiRFHevmHafB
 go.opentelemetry.io/otel/sdk v1.22.0/go.mod h1:iu7luyVGYovrRpe2fmj3CVKouQNdTOkxtLzPvPz1DOc=
 go.opentelemetry.io/otel/trace v1.24.0 h1:CsKnnL4dUAr/0llH9FKuc698G04IrpWV0MQA/Y1YELI=
 go.opentelemetry.io/otel/trace v1.24.0/go.mod h1:HPc3Xr/cOApsBI154IU0OI0HJexz+aw5uPdbs3UCjNU=
-go.yhsif.com/ctxslog v1.1.0-beta.1 h1:5Lu01+Pt/WEc8eqPYDrrT7A6gQaTjeSXGMort6ghme8=
-go.yhsif.com/ctxslog v1.1.0-beta.1/go.mod h1:xFOd7LrNvPlOvpmFKDwLWwXQnNRnnabeuzx2+bBcp4A=
+go.yhsif.com/ctxslog v1.1.0-beta.2 h1:SvZUpBZx4RkiVq6ZVqTHqROyyXgoawMvRlFuyzJ2BOw=
+go.yhsif.com/ctxslog v1.1.0-beta.2/go.mod h1:xFOd7LrNvPlOvpmFKDwLWwXQnNRnnabeuzx2+bBcp4A=
 go.yhsif.com/stalecache v0.2.0 h1:ImeQntH1nR2b7g/5WJTKo60locK2/QIWSpnzIAB14ig=
 go.yhsif.com/stalecache v0.2.0/go.mod h1:iMZriVtFAuMGMHgW12GhafH7WzIK/ZjY3gp3UbMGohc=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
