@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 	"os"
@@ -126,9 +127,18 @@ func Boot(ctx context.Context) (http.Handler, error) {
 	mw = sessionManager.LoadAndSave(mw)
 	mw = b.Middleware(mw)
 	mw = middleware.Gzip(mw)
-	mw = h.LogRequest(mw)
+	mw = middleware.LogRequest(mw)
 
-	return mw, nil
+	mux := http.NewServeMux()
+	mux.Handle("/", mw)
+	// health check with only LogRequest middleware
+	mux.Handle("/ready", middleware.LogRequest(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			io.WriteString(w, "OK\n")
+		}),
+	))
+
+	return mux, nil
 }
 
 func loadBlocklist(ctx context.Context) blocklist.Blocklist {

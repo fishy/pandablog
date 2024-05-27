@@ -31,7 +31,7 @@ func (rww responseWriterWrapper) getCode() int {
 }
 
 // LogRequest will log the HTTP requests.
-func (c *Handler) LogRequest(next http.Handler) http.Handler {
+func LogRequest(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		realIPFunc := ctxslog.GCPRealIP
 		if envdetect.RunningLocalDev() {
