@@ -32,15 +32,15 @@ en
         </nav>
     </header>
 
-    <article>
+    <article{{if .microformat}} class="h-entry"{{end}}>
     <main>
         {{if .title}}
-        <h1>{{.title}}</h1>
+        <h1{{if .microformat}} class="p-name"{{end}}>{{.title}}</h1>
         {{end}}
         {{if .pubdate}}
         <p>
             <i>
-                <time datetime="{{.pubdate | Stamp}}" pubdate>
+                <time class="dt-published" datetime="{{.pubdate | Stamp}}" pubdate>
                     {{.pubdate | StampHuman}}
                 </time>
                 {{if Authenticated}}<a href="/dashboard/posts/{{.id}}">edit</a>{{end}}
@@ -48,7 +48,7 @@ en
             
         </p>
         {{end}}
-        <content>
+        <content{{if .microformat}} class="e-content"{{end}}>
             {{if .query}}
             <h3 style="margin-bottom:0">Filtering for "{{.query}}"</h3>
             <small>
@@ -61,7 +61,7 @@ en
         <small>
             <div>
                 {{range $p := .tags}}
-                <a href="/blog?q={{.Name}}">#{{.Name}}</a>
+                <a class="p-category" href="/blog?q={{.Name}}">#{{.Name}}</a>
                 {{end}}
             </div>
         </small>

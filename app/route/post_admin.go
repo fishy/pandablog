@@ -276,6 +276,7 @@ func sendBridgyFedWebmention(ctx context.Context, post model.Post, site *model.S
 			"Bridgy Fed webmention request failed",
 			"err", err,
 			"url", endpoint,
+			"form", encodedForm,
 			"req", req,
 			"took", took,
 		)
@@ -291,6 +292,7 @@ func sendBridgyFedWebmention(ctx context.Context, post model.Post, site *model.S
 			ctx,
 			"Bridgy Fed webmention request returned status >= 400",
 			"url", endpoint,
+			"form", encodedForm,
 			"status", status,
 			"body", string(body),
 			"response headers", resp.Header,
@@ -301,6 +303,7 @@ func sendBridgyFedWebmention(ctx context.Context, post model.Post, site *model.S
 			ctx,
 			"Bridgy Fed webmention request returned",
 			"url", endpoint,
+			"form", encodedForm,
 			"status", status,
 			"body", string(body),
 			"response headers", resp.Header,

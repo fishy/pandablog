@@ -98,6 +98,7 @@ func (c *Post) show(w http.ResponseWriter, r *http.Request) (status int, err err
 	vars["siteLang"] = site.Lang
 	vars["postLang"] = p.Lang
 	vars["bridgyFed"] = site.BridgyFedURL("" /* path */, "" /* query */)
+	vars["microformat"] = true
 
 	return c.Render.Post(w, r, "base", p.Post, vars)
 }
