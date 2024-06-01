@@ -3,6 +3,7 @@ package middleware
 import (
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 
 	"go.yhsif.com/ctxslog"
@@ -40,6 +41,7 @@ func LogRequest(next http.Handler) http.Handler {
 		ctx := ctxslog.Attach(
 			r.Context(),
 			"httpRequest", ctxslog.HTTPRequest(r, realIPFunc),
+			"goodHeaders", goodHeadersInRequest(r),
 		)
 		rw := &responseWriterWrapper{ResponseWriter: w}
 		defer func(start time.Time) {
@@ -53,4 +55,22 @@ func LogRequest(next http.Handler) http.Handler {
 
 		next.ServeHTTP(rw, r.WithContext(ctx))
 	})
+}
+
+var goodHeaders = []string{
+	"Accept-Encoding",
+	"If-Modified-Since",
+}
+
+func goodHeadersInRequest(r *http.Request) string {
+	var headers []string
+	for _, h := range goodHeaders {
+		if _, ok := r.Header[h]; ok {
+			headers = append(headers, h)
+		}
+	}
+	if len(headers) == 0 {
+		return "(none)"
+	}
+	return strings.Join(headers, ", ")
 }

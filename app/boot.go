@@ -126,8 +126,8 @@ func Boot(ctx context.Context) (http.Handler, error) {
 	mw = h.DisallowAnon(mw)
 	mw = sessionManager.LoadAndSave(mw)
 	mw = b.Middleware(mw)
-	mw = middleware.Gzip(mw)
 	mw = middleware.LogRequest(mw)
+	mw = middleware.Gzip(mw)
 
 	mux := http.NewServeMux()
 	mux.Handle("/", mw)

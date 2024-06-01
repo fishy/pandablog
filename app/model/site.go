@@ -215,3 +215,18 @@ func (s *Site) BridgyFedURL(path, query string) string {
 		RawQuery: query,
 	}).String()
 }
+
+// LastUpdate returns the last update time for the site itself or any of the
+// posts, in UTC.
+func (s *Site) LastModified() time.Time {
+	s.postsLock.RLock()
+	defer s.postsLock.RUnlock()
+
+	modified := s.Updated
+	for _, p := range s.Posts {
+		if updated := p.Updated; updated.After(modified) {
+			modified = updated
+		}
+	}
+	return modified.UTC()
+}

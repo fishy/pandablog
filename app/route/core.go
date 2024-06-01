@@ -3,7 +3,6 @@ package route
 import (
 	"context"
 	"fmt"
-	"io"
 	"io/fs"
 	"log/slog"
 	"net/http"
@@ -102,20 +101,7 @@ func setupRouter(tmpl *htmltemplate.Engine) *router.Mux {
 		// Get the requested file name.
 		fname := strings.TrimPrefix(r.URL.Path, "/assets/")
 
-		// Open the file.
-		f, err := fsys.Open(fname)
-		if err != nil {
-			return http.StatusNotFound, nil
-		}
-		defer f.Close()
-
-		// Get the file time.
-		st, err := f.Stat()
-		if err != nil {
-			return http.StatusInternalServerError, err
-		}
-
-		http.ServeContent(w, r, fname, st.ModTime(), f.(io.ReadSeeker))
+		http.ServeFileFS(w, r, fsys, fname)
 		return
 	})
 

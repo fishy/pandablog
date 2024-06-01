@@ -5,6 +5,8 @@ import (
 	"io"
 	"net/http"
 	"strings"
+
+	"go.yhsif.com/ctxslog"
 )
 
 // Gzip Compression
@@ -22,12 +24,20 @@ func (w gzipResponseWriter) Write(b []byte) (int, error) {
 func Gzip(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
+			r = r.WithContext(ctxslog.Attach(
+				r.Context(),
+				"gzip", false,
+			))
 			handler.ServeHTTP(w, r)
 			return
 		}
 		w.Header().Set("Content-Encoding", "gzip")
 		gz := gzip.NewWriter(w)
 		gzw := gzipResponseWriter{Writer: gz, ResponseWriter: w}
+		r = r.WithContext(ctxslog.Attach(
+			r.Context(),
+			"gzip", true,
+		))
 		handler.ServeHTTP(gzw, r)
 		gz.Close()
 	})

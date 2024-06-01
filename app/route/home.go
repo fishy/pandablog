@@ -27,6 +27,10 @@ func (c *HomePost) show(w http.ResponseWriter, r *http.Request) (status int, err
 		return http.StatusInternalServerError, err
 	}
 
+	if status := handleConditionalGet(w, r, site.Updated); status > 0 {
+		return status, nil
+	}
+
 	p := model.Post{
 		Content: site.Content,
 		URL:     "/",

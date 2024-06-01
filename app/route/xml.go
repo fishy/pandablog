@@ -39,6 +39,10 @@ func (c *XMLUtil) sitemap(w http.ResponseWriter, r *http.Request) (status int, e
 		return http.StatusInternalServerError, err
 	}
 
+	if status := handleConditionalGet(w, r, site.LastModified()); status > 0 {
+		return status, nil
+	}
+
 	type URL struct {
 		Location     string `xml:"loc"`
 		LastModified string `xml:"lastmod"`
@@ -98,6 +102,10 @@ func (c *XMLUtil) rss(w http.ResponseWriter, r *http.Request) (status int, err e
 	site, err := c.Storage.Site.Load(r.Context())
 	if err != nil {
 		return http.StatusInternalServerError, err
+	}
+
+	if status := handleConditionalGet(w, r, site.LastModified()); status > 0 {
+		return status, nil
 	}
 
 	type Cdata struct {

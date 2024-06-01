@@ -29,6 +29,10 @@ func (c *Post) index(w http.ResponseWriter, r *http.Request) (status int, err er
 		return http.StatusInternalServerError, err
 	}
 
+	if status := handleConditionalGet(w, r, site.LastModified()); status > 0 {
+		return status, nil
+	}
+
 	vars := make(map[string]any)
 	vars["tags"] = site.Tags(true)
 
@@ -81,6 +85,16 @@ func (c *Post) show(w http.ResponseWriter, r *http.Request) (status int, err err
 	// Show 404 if not published and not in preview mode.
 	if !p.Published && !preview {
 		return http.StatusNotFound, nil
+	}
+
+	if !preview {
+		lastModified := p.Updated
+		if lastModified.Before(site.Updated) {
+			lastModified = site.Updated
+		}
+		if status := handleConditionalGet(w, r, lastModified); status > 0 {
+			return status, nil
+		}
 	}
 
 	vars := make(map[string]any)
