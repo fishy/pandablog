@@ -19,12 +19,12 @@ func InitJSON() {
 	)
 	if v, ok := os.LookupEnv("VERSION_TAG"); ok {
 		logger = logger.With(slog.String("v", v))
-		slog.SetDefault(logger)
 	}
+	slog.SetDefault(logger)
 }
 
 func InitText() {
-	ctxslog.New(
+	slog.SetDefault(ctxslog.New(
 		ctxslog.WithText,
 		ctxslog.WithAddSource(true),
 		ctxslog.WithLevel(slog.LevelDebug),
@@ -32,5 +32,5 @@ func InitText() {
 		ctxslog.WithReplaceAttr(ctxslog.ChainReplaceAttr(
 			ctxslog.StringDuration,
 		)),
-	)
+	))
 }
