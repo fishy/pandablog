@@ -14,6 +14,13 @@
         <input type="text" name="author" value="{{.pauthor}}" id="id_author" required>
     </p>
     <p>
+        <label for="id_fedicreator">Fediverse account:</label>
+        <input type="text" name="fedicreator" value="{{.fedicreator}}" id="id_fedicreator">
+        <span class="helptext">
+          (ex. &quot;@Gargron@mastodon.social&quot;. <a href="https://blog.joinmastodon.org/2024/07/highlighting-journalism-on-mastodon/" target="_blank">learn more</a>)
+        </span>
+    </p>
+    <p>
         <label for="id_domain">Site url:</label>
         <select name="scheme" id="id_scheme" required>
             <option value="http" {{ if eq .scheme "http" }}selected{{ end }}>http</option>
@@ -21,7 +28,7 @@
         </select>
         <span class="helptext">://</span>
         <input type="text" name="domain" value="{{.domain}}" id="id_domain" required>
-        <span class="helptext">(ex. www.example.com)</span>
+        <span class="helptext">(ex. &quot;www.example.com&quot;)</span>
     </p>
     <p>
         <label for="id_loginurl">Site login url:</label>
@@ -32,7 +39,7 @@
         <label for="id_lang">Site default lang:</label>
         <input type="text" name="lang" value="{{.lang}}" id="id_lang">
         <span class="helptext">
-            (ex. 'en' or 'en-US'. <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang" target="_blank">Learn more</a>)
+            (ex. &quot;en&quot; or &quot;en-US&quot;. <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang" target="_blank">Learn more</a>)
         </span>
     </p>
     <p>

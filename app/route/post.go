@@ -35,6 +35,7 @@ func (c *Post) index(w http.ResponseWriter, r *http.Request) (status int, err er
 
 	vars := make(map[string]any)
 	vars["tags"] = site.Tags(true)
+	vars["fedicreator"] = site.FediCreator
 
 	// Determine if there is query.
 	if q := r.URL.Query().Get("q"); len(q) > 0 {
@@ -105,6 +106,7 @@ func (c *Post) show(w http.ResponseWriter, r *http.Request) (status int, err err
 	}
 
 	vars["tags"] = p.Tags
+	vars["fedicreator"] = site.FediCreator
 	vars["canonical"] = p.Canonical
 	vars["id"] = p.ID
 	vars["posturl"] = p.URL

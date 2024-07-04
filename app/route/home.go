@@ -42,6 +42,7 @@ func (c *HomePost) show(w http.ResponseWriter, r *http.Request) (status int, err
 
 	vars := make(map[string]any)
 	vars["siteLang"] = site.Lang
+	vars["fedicreator"] = site.FediCreator
 	return c.Render.Post(w, r, "base", p, vars)
 }
 
@@ -67,6 +68,7 @@ func (c *HomePost) edit(w http.ResponseWriter, r *http.Request) (status int, err
 
 	vars["scheme"] = site.Scheme
 	vars["pauthor"] = site.Author
+	vars["fedicreator"] = site.FediCreator
 	vars["pdescription"] = site.Description
 	vars["loginurl"] = site.LoginURL
 	vars["homeurl"] = site.HomeURL
@@ -102,6 +104,7 @@ func (c *HomePost) update(w http.ResponseWriter, r *http.Request) (status int, e
 	site.Content = r.FormValue("content")
 	site.Scheme = r.FormValue("scheme")
 	site.Author = r.FormValue("author")
+	site.FediCreator = r.FormValue("fedicreator")
 	site.Description = r.FormValue("pdescription")
 	site.LoginURL = r.FormValue("loginurl")
 	site.HomeURL = r.FormValue("homeurl")

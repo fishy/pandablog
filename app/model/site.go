@@ -16,6 +16,7 @@ type Site struct {
 	Title             string    `json:"title"`
 	Subtitle          string    `json:"subtitle"`
 	Author            string    `json:"author"`
+	FediCreator       string    `json:"fedicreator"`
 	Favicon           string    `json:"favicon"`
 	Description       string    `json:"description"`
 	Scheme            string    `json:"scheme"`

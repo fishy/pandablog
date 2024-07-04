@@ -14,8 +14,9 @@
     {{if EnablePrism}}<link rel="stylesheet" href="{{"/assets/css/prism-vsc-dark-plus.css" | AssetStamp}}">{{end}}
     <link rel="alternate" href="/rss.xml" type="application/rss+xml" title="{{SiteTitle}}">
     {{if .query}}<link rel="alternate" href="/rss.xml?q={{.query}}" type="application/rss+xml" title="{{SiteTitle}} - #{{.query}}">{{end}}
-    <meta name="author" content="{{SiteAuthor}}">
-    <meta name="description" content="{{if .metadescription}}{{.metadescription}}{{else}}{{SiteDescription}}{{end}}">
+    <meta name="author" content="{{SiteAuthor}}" />
+    <meta name="description" content="{{if .metadescription}}{{.metadescription}}{{else}}{{SiteDescription}}{{end}}" />
+    {{if .fedicreator}}<meta name="fediverse:creator" content="{{.fedicreator}}" />{{end}}
     {{if .canonical}}<link rel="canonical" href="{{.canonical}}" />{{end}}
     <!--[if IE]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
