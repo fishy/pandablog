@@ -19,6 +19,7 @@ gcloud=gcloud --project=$(PBB_GCP_PROJECT_ID)
 docker_image=$(PBB_GCP_REGION)-docker.pkg.dev/$(PBB_GCP_PROJECT_ID)/${PBB_GCP_IMAGE_NAME}/${PBB_GCP_IMAGE_NAME}
 full_git_version=$(shell git rev-parse HEAD)
 version_tag=$(shell echo $(full_git_version) | cut -c1-12)
+build_timestamp=$(shell date +%s)
 
 .PHONY: deploy
 deploy: gcp-push
@@ -51,6 +52,7 @@ gcp-push: test
 		--cpu 1 \
 		--memory 128Mi \
 		--update-env-vars VERSION_TAG=$(version_tag) \
+		--update-env-vars BUILD_TIMESTAMP=$(build_timestamp) \
 		--update-env-vars PBB_USERNAME=${PBB_USERNAME} \
 		--update-env-vars PBB_SESSION_KEY=${PBB_SESSION_KEY} \
 		--update-env-vars PBB_PASSWORD_HASH=${PBB_PASSWORD_HASH} \
