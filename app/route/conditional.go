@@ -47,6 +47,8 @@ func handleConditionalGet(w http.ResponseWriter, r *http.Request, lastModified t
 				r.Context(),
 				"Old if-modified-since header in request",
 				"if-modified-since", timeInReq,
+				"want", lastModified,
+				"diff", lastModified.Sub(timeInReq),
 				"raw-header", r.Header.Get("if-modified-since"),
 			)
 		}
