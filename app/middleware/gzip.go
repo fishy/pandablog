@@ -23,12 +23,18 @@ func (w gzipResponseWriter) Write(b []byte) (int, error) {
 // Source: https://gist.github.com/bryfry/09a650eb8aac0fb76c24
 func Gzip(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
-			r = r.WithContext(ctxslog.Attach(
+		if header := r.Header.Get("Accept-Encoding"); !strings.Contains(header, "gzip") {
+			ctx := ctxslog.Attach(
 				r.Context(),
 				"gzip", false,
-			))
-			handler.ServeHTTP(w, r)
+			)
+			if header != "" {
+				ctx = ctxslog.Attach(
+					ctx,
+					"accept-encoding", header,
+				)
+			}
+			handler.ServeHTTP(w, r.WithContext(ctx))
 			return
 		}
 		w.Header().Set("Content-Encoding", "gzip")
