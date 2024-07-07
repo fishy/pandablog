@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log"
+	"log/slog"
 	"os"
 	"syscall"
 
@@ -15,7 +16,7 @@ import (
 )
 
 func init() {
-	logging.InitText()
+	logging.InitText(slog.LevelDebug)
 	// Set the time zone.
 	timezone.Set()
 }

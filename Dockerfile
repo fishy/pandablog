@@ -14,4 +14,4 @@ RUN CGO_ENABLED=0 go build -trimpath -o /go/bin/app
 FROM gcr.io/distroless/static
 COPY --from=build /go/bin/app /go/src/app/*.yaml /
 WORKDIR /
-CMD ["/app"]
+CMD ["/app", "--log-level=DEBUG"]

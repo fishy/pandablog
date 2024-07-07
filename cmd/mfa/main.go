@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"log/slog"
 	"os"
 
 	"github.com/mdp/qrterminal/v3"
@@ -13,7 +14,7 @@ import (
 )
 
 func init() {
-	logging.InitText()
+	logging.InitText(slog.LevelDebug)
 	// Set the time zone.
 	timezone.Set()
 }

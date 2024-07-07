@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"log/slog"
 	"net/http"
 	"os"
@@ -14,16 +15,21 @@ import (
 )
 
 func init() {
-	if envdetect.RunningLocalDev() {
-		logging.InitText()
-	} else {
-		logging.InitJSON()
-	}
 	// Set the time zone.
 	timezone.Set()
 }
 
 func main() {
+	var logLevel slog.Level
+	flag.TextVar(&logLevel, "log-level", slog.LevelDebug, "minimal log level to keep")
+	flag.Parse()
+
+	if envdetect.RunningLocalDev() {
+		logging.InitText(logLevel)
+	} else {
+		logging.InitJSON(logLevel)
+	}
+
 	if bi, ok := debug.ReadBuildInfo(); ok {
 		slog.Debug(
 			"Read build info",
