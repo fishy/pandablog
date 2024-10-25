@@ -2,5 +2,5 @@ package assets
 
 import "embed"
 
-//go:embed *
-var CSS embed.FS
+//go:embed css/* cactus/*
+var Assets embed.FS

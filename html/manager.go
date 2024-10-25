@@ -47,8 +47,7 @@ func (tm *TemplateManager) PartialTemplate(r *http.Request, mainTemplate string,
 	contentTemplate := fmt.Sprintf("partial/%v.tmpl", partialTemplate)
 
 	// Parse the main template with the functions.
-	t, err := template.New(path.Base(baseTemplate)).Funcs(fm).ParseFS(templates, baseTemplate,
-		headerTemplate, contentTemplate)
+	t, err := template.New(path.Base(baseTemplate)).Funcs(fm).ParseFS(templates, baseTemplate, headerTemplate, contentTemplate)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +87,7 @@ func (tm *TemplateManager) FooterMarkdown(ctx context.Context) (string, error) {
 // assetTimePath returns a URL with a MD5 hash appended.
 func assetTimePath(s string) string {
 	// Use the root directory.
-	fsys, err := fs.Sub(assets.CSS, ".")
+	fsys, err := fs.Sub(assets.Assets, ".")
 	if err != nil {
 		return s
 	}

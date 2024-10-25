@@ -93,7 +93,7 @@ func setupRouter(tmpl *htmltemplate.Engine) *router.Mux {
 		}
 
 		// Use the root directory.
-		fsys, err := fs.Sub(assets.CSS, ".")
+		fsys, err := fs.Sub(assets.Assets, ".")
 		if err != nil {
 			return http.StatusInternalServerError, err
 		}
