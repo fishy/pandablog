@@ -11,7 +11,7 @@
     <meta property="og:type" content="website" />
     {{end -}}
     <meta property="og:site_name" content="{{SiteTitle}}" />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>{{SiteFavicon}}</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>{{SiteFavicon}}</text></svg>" />
     {{if StylesAppend}}<link rel="stylesheet" href="{{"/assets/css/style.css" | AssetStamp}}">{{end}}
     {{if EnablePrism}}<link rel="stylesheet" href="{{"/assets/css/prism-vsc-dark-plus.css" | AssetStamp}}">{{end}}
     <link rel="alternate" href="/rss.xml" type="application/rss+xml" title="{{SiteTitle}}">
@@ -22,7 +22,14 @@
     {{- if .canonical}}
     <link rel="canonical" href="{{.canonical}}" />
     <meta property="og:url" content="{{.canonical}}" />
-    {{end -}}
+    {{end}}
+
+    <meta property="og:image" content="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>{{SiteFavicon}}</text></svg>" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="256" />
+    <meta property="og:image:height" content="256" />
+    <meta property="og:image:alt" content="The emoji favicon of {{SiteTitle}}" />
+
     <!--[if IE]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
