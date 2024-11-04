@@ -19,11 +19,16 @@
     <meta name="author" property="author" content="{{SiteAuthor}}" />
     <meta name="description" content="{{if .metadescription}}{{.metadescription}}{{else}}{{SiteDescription}}{{end}}" />
     {{if .fedicreator}}<meta name="fediverse:creator" content="{{.fedicreator}}" />{{end}}
-    {{- if .canonical}}
+    {{if .canonical -}}
     <link rel="canonical" href="{{.canonical}}" />
     <meta property="og:url" content="{{.canonical}}" />
-    {{end}}
+    {{- end}}
+
     <meta property="og:image" content="{{OGImageURL}}" />
+    <meta property="og:image:alt" content="Emoji icon of {{SiteTitle}}" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="256" />
+    <meta property="og:image:height" content="256" />
 
     <!--[if IE]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
