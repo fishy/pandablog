@@ -40,6 +40,7 @@ func Register(storage *datastorage.Storage, sess *websession.Session, tmpl *html
 	}
 	registerHomePost(&HomePost{c}, site.HomeURL)
 	registerStyles(&Styles{c})
+	registerImage(&Image{c})
 	registerAuthUtil(&AuthUtil{c})
 	registerXMLUtil(&XMLUtil{c})
 	registerAdminPost(&AdminPost{c})

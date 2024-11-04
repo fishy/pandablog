@@ -1,6 +1,7 @@
 package html
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"os"
@@ -114,6 +115,9 @@ func FuncMap(
 	}
 	fm["EnablePrism"] = func() bool {
 		return site.Prism
+	}
+	fm["OGImageURL"] = func() string {
+		return fmt.Sprintf("%s://%s/icon.svg?size=256px", site.Scheme, site.URL)
 	}
 
 	return fm, nil
