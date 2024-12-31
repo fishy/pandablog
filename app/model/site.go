@@ -6,10 +6,12 @@ import (
 	"slices"
 	"sync"
 	"time"
+
+	"go.yhsif.com/pandablog/app/lib/openmoji"
 )
 
 // DefaultFooter is the default Footer.
-const DefaultFooter = `Powered by [🐼](https://github.com/fishy/pandablog), theme by [🐻](https://bearblog.dev/)`
+const DefaultFooter = `Powered by [🐼](https://github.com/fishy/pandablog), theme by [🐻](https://bearblog.dev/), favicon by [🙋](https://openmoji.org)`
 
 // Site -
 type Site struct {
@@ -41,8 +43,9 @@ type Site struct {
 
 	Footer *string `json:"footer"`
 
-	postsLock sync.RWMutex    `json:"-"`
-	Posts     map[string]Post `json:"posts"`
+	lock           sync.RWMutex             `json:"-"`
+	Posts          map[string]Post          `json:"posts"`
+	emojiResources *openmoji.EmojiResources `json:"-"`
 }
 
 // SiteURL -
@@ -74,14 +77,14 @@ func (s *Site) FooterMarkdown() string {
 
 // PublishedPosts -
 func (s *Site) PublishedPosts() []Post {
-	s.postsLock.RLock()
+	s.lock.RLock()
 	arr := make([]Post, 0, len(s.Posts))
 	for _, v := range s.Posts {
 		if v.Published && !v.Page {
 			arr = append(arr, v)
 		}
 	}
-	s.postsLock.RUnlock()
+	s.lock.RUnlock()
 
 	slices.SortFunc(arr, func(left, right Post) int {
 		return left.Compare(right)
@@ -92,14 +95,14 @@ func (s *Site) PublishedPosts() []Post {
 
 // PublishedPages -
 func (s *Site) PublishedPages() []Post {
-	s.postsLock.RLock()
+	s.lock.RLock()
 	var arr []Post
 	for _, v := range s.Posts {
 		if v.Published && v.Page {
 			arr = append(arr, v)
 		}
 	}
-	s.postsLock.RUnlock()
+	s.lock.RUnlock()
 
 	slices.SortFunc(arr, func(left, right Post) int {
 		return left.Compare(right)
@@ -110,7 +113,7 @@ func (s *Site) PublishedPages() []Post {
 
 // PostsAndPages -
 func (s *Site) PostsAndPages(onlyPublished bool) []PostWithID {
-	s.postsLock.RLock()
+	s.lock.RLock()
 	arr := make([]PostWithID, 0, len(s.Posts))
 	for k, v := range s.Posts {
 		if onlyPublished && !v.Published {
@@ -120,7 +123,7 @@ func (s *Site) PostsAndPages(onlyPublished bool) []PostWithID {
 		p := PostWithID{Post: v, ID: k}
 		arr = append(arr, p)
 	}
-	s.postsLock.RUnlock()
+	s.lock.RUnlock()
 
 	slices.SortFunc(arr, func(left, right PostWithID) int {
 		return left.Compare(right.Post)
@@ -131,7 +134,7 @@ func (s *Site) PostsAndPages(onlyPublished bool) []PostWithID {
 
 // Tags -
 func (s *Site) Tags(onlyPublished bool) TagList {
-	s.postsLock.RLock()
+	s.lock.RLock()
 	// Get unique values.
 	m := make(map[string]Tag)
 	for _, v := range s.Posts {
@@ -143,7 +146,7 @@ func (s *Site) Tags(onlyPublished bool) TagList {
 			m[t.Name] = t
 		}
 	}
-	s.postsLock.RUnlock()
+	s.lock.RUnlock()
 
 	// Create unsorted tag list.
 	arr := make(TagList, 0, len(m))
@@ -161,8 +164,8 @@ func (s *Site) Tags(onlyPublished bool) TagList {
 
 // PostBySlug -
 func (s *Site) PostBySlug(slug string) PostWithID {
-	s.postsLock.RLock()
-	defer s.postsLock.RUnlock()
+	s.lock.RLock()
+	defer s.lock.RUnlock()
 
 	// FIXME: This needs to be optimized.
 	var p PostWithID
@@ -181,8 +184,8 @@ func (s *Site) PostBySlug(slug string) PostWithID {
 
 // PostByID -
 func (s *Site) PostByID(id string) (Post, bool) {
-	s.postsLock.RLock()
-	defer s.postsLock.RUnlock()
+	s.lock.RLock()
+	defer s.lock.RUnlock()
 
 	post, ok := s.Posts[id]
 	return post, ok
@@ -190,8 +193,8 @@ func (s *Site) PostByID(id string) (Post, bool) {
 
 // UpdatePost - use nil to delete the post, otherwise add/update it.
 func (s *Site) UpdatePost(id string, post *Post) {
-	s.postsLock.Lock()
-	defer s.postsLock.Unlock()
+	s.lock.Lock()
+	defer s.lock.Unlock()
 
 	if post == nil {
 		delete(s.Posts, id)
@@ -220,8 +223,8 @@ func (s *Site) BridgyFedURL(path, query string) string {
 // LastUpdate returns the last update time for the site itself or any of the
 // posts, in UTC.
 func (s *Site) LastModified() time.Time {
-	s.postsLock.RLock()
-	defer s.postsLock.RUnlock()
+	s.lock.RLock()
+	defer s.lock.RUnlock()
 
 	modified := s.Updated
 	for _, p := range s.Posts {
@@ -230,4 +233,15 @@ func (s *Site) LastModified() time.Time {
 		}
 	}
 	return modified.UTC()
+}
+
+func (s *Site) EmojiResources() openmoji.EmojiResources {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
+	if s.emojiResources == nil {
+		resources := openmoji.Load(s.Favicon, fmt.Sprintf("%s/icon.svg", s.SiteURL(nil)))
+		s.emojiResources = &resources
+	}
+	return *s.emojiResources
 }

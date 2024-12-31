@@ -11,7 +11,7 @@
     <meta property="og:type" content="website" />
     {{end -}}
     <meta property="og:site_name" content="{{SiteTitle}}" />
-    <link rel="icon" href="/icon.svg" />
+    <link rel="icon" href="{{FaviconURL}}" type="{{FaviconMimeType}}" />
     {{if StylesAppend}}<link rel="stylesheet" href="{{"/assets/css/style.css" | AssetStamp}}">{{end}}
     {{if EnablePrism}}<link rel="stylesheet" href="{{"/assets/css/prism-vsc-dark-plus.css" | AssetStamp}}">{{end}}
     <link rel="alternate" href="/rss.xml" type="application/rss+xml" title="{{SiteTitle}}">
@@ -24,11 +24,11 @@
     <meta property="og:url" content="{{.canonical}}" />
     {{- end}}
 
-    <meta property="og:image" content="{{OGImageURL}}" />
+    <meta property="og:image" content="{{FaviconLargeURL}}" />
     <meta property="og:image:alt" content="Emoji icon of {{SiteTitle}}" />
-    <meta property="og:image:type" content="image/svg+xml" />
-    <meta property="og:image:width" content="256" />
-    <meta property="og:image:height" content="256" />
+    <meta property="og:image:type" content="{{FaviconMimeType}}" />
+    <meta property="og:image:width" content="618" />
+    <meta property="og:image:height" content="618" />
 
     <!--[if IE]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
