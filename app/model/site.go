@@ -245,3 +245,12 @@ func (s *Site) EmojiResources() openmoji.EmojiResources {
 	}
 	return *s.emojiResources
 }
+
+func (s *Site) Update() {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
+	resources := openmoji.Load(s.Favicon, fmt.Sprintf("%s/icon.svg", s.SiteURL(nil)))
+	s.emojiResources = &resources
+	s.Updated = time.Now()
+}

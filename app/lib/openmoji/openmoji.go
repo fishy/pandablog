@@ -2,6 +2,8 @@
 package openmoji
 
 import (
+	"bufio"
+	_ "embed"
 	"fmt"
 	"net/url"
 	"strings"
@@ -14,10 +16,25 @@ type EmojiResources struct {
 	URLSmall string
 }
 
+// The file list is coming from
+// https://github.com/hfg-gmuend/openmoji/releases/download/15.1.0/openmoji-72x72-color.zip
+//
+// It can be updated like this:
+//
+//	curl -LO https://github.com/hfg-gmuend/openmoji/releases/download/15.1.0/openmoji-72x72-color.zip
+//	mkdir tmp
+//	unzip openmoji-72x72-color.zip -d tmp/
+//	ls tmp/ > files.txt
+//	rm -rf openmoji-72x72-color.zip tmp/
+//
+//go:embed files.txt
+var files string
+
 var filesMap = func() map[string]struct{} {
-	m := make(map[string]struct{}, len(files))
-	for _, file := range files {
-		m[strings.TrimSuffix(file, ".png")] = struct{}{}
+	scanner := bufio.NewScanner(strings.NewReader(files))
+	m := make(map[string]struct{})
+	for scanner.Scan() {
+		m[strings.TrimSuffix(strings.TrimSpace(scanner.Text()), ".png")] = struct{}{}
 	}
 	return m
 }()

@@ -2,7 +2,6 @@ package route
 
 import (
 	"net/http"
-	"time"
 
 	"go.yhsif.com/pandablog/app/model"
 )
@@ -117,7 +116,8 @@ func (c *HomePost) update(w http.ResponseWriter, r *http.Request) (status int, e
 	site.Lang = r.FormValue("lang")
 	footer := r.FormValue("footer")
 	site.Footer = &footer
-	site.Updated = time.Now()
+
+	site.Update()
 
 	err = c.Storage.Save(site)
 	if err != nil {

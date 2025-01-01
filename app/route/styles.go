@@ -52,6 +52,8 @@ func (c *Styles) update(w http.ResponseWriter, r *http.Request) (status int, err
 	site.StackEdit = (r.FormValue("stackedit") == "on")
 	site.Prism = (r.FormValue("prism") == "on")
 
+	site.Update()
+
 	if err := c.Storage.Save(site); err != nil {
 		return http.StatusInternalServerError, err
 	}
