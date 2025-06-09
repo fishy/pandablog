@@ -11,9 +11,15 @@ ip:
 ua:
 # - ".*foo.*"  # Any user-agent with "foo" in it will match
 
+uri:
+# - "\.php$" # Any request path ends with ".php" will match
+
 # By default, we use http status code 403 for blocked requests.
 # code: 403
 
 # By default, we use the default message from the code for blocked requests,
 # you can customize the message here.
 # message: "go away"
+
+# Make it sleep for 1s +- 10% before returning 403 or the code of your choice.
+# sleep: 1s

@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"math/rand/v2"
 	"net/http"
 	"net/netip"
 	"regexp"
+	"time"
 
 	"go.yhsif.com/ctxslog"
 	"gopkg.in/yaml.v3"
@@ -22,9 +24,9 @@ type withRaw[T any] struct {
 }
 
 type matchError struct {
-	ruleType string // "ua" or "ip"
+	ruleType string // "ip", "ua", or "uri"
 	rule     string // the raw rule
-	matched  string // matched ip or ua from the request
+	matched  string // matched ip, ua, or uri from the request
 }
 
 func (me matchError) Error() string {
@@ -37,14 +39,17 @@ func (me matchError) Error() string {
 //
 // A non-zero Blocklist must call Parse first before it can be used.
 type Blocklist struct {
-	Code    *int    `yaml:"code"`
-	Message *string `yaml:"message"`
+	Code    *int          `yaml:"code"`
+	Message *string       `yaml:"message"`
+	Sleep   time.Duration `yaml:"sleep"`
 
-	IP []string `yaml:"ip"`
-	UA []string `yaml:"ua"`
+	IP  []string `yaml:"ip"`
+	UA  []string `yaml:"ua"`
+	URI []string `yaml:"uri"`
 
 	ipPrefixes []withRaw[netip.Prefix]
 	ua         []withRaw[*regexp.Regexp]
+	uri        []withRaw[*regexp.Regexp]
 }
 
 // ParseYAML creates a Blocklist from yaml config.
@@ -104,6 +109,19 @@ func (b *Blocklist) Parse(ctx context.Context) {
 		})
 	}
 	slog.DebugContext(ctx, "blocklist: parsed ua rules", "n", len(b.ua))
+	b.uri = make([]withRaw[*regexp.Regexp], 0, len(b.URI))
+	for _, str := range b.URI {
+		uri, err := regexp.Compile(str)
+		if err != nil {
+			slog.WarnContext(ctx, "Failed to parse URI regexp", "err", err, "uri", str)
+			continue
+		}
+		b.uri = append(b.uri, withRaw[*regexp.Regexp]{
+			raw: str,
+			v:   uri,
+		})
+	}
+	slog.DebugContext(ctx, "blocklist: parsed uri rules", "n", len(b.uri))
 }
 
 // Check returns an error if the request matches the blocklist.
@@ -119,6 +137,16 @@ func (b Blocklist) Check(r *http.Request) error {
 				ruleType: "ip",
 				rule:     rule.raw,
 				matched:  ip.String(),
+			}
+		}
+	}
+	uri := r.URL.Path
+	for _, rule := range b.uri {
+		if rule.v.MatchString(r.URL.Path) {
+			return matchError{
+				ruleType: "uri",
+				rule:     rule.raw,
+				matched:  uri,
 			}
 		}
 	}
@@ -140,16 +168,26 @@ func (b Blocklist) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/robots.txt" { // still allow them to access robots.txt
 			if err := b.Check(r); err != nil {
-				slog.InfoContext(r.Context(), "blocking request", "err", err)
+				ctx := r.Context()
+				var sleep time.Duration
+				if b.Sleep > 0 {
+					// Sleep for b.Sleep +- 10%
+					sleep = time.Duration(float64(b.Sleep) * (1 - (rand.Float64()*2-1)*0.1))
+					ctx = ctxslog.Attach(ctx, "sleep", sleep)
+				}
 				code := http.StatusForbidden
 				if b.Code != nil {
 					code = *b.Code
 				}
-				w.WriteHeader(code)
 				text := http.StatusText(code)
 				if b.Message != nil {
 					text = *b.Message
 				}
+				slog.InfoContext(ctx, "blocking request", "err", err, "code", code, "text", text)
+				if sleep > 0 {
+					time.Sleep(sleep)
+				}
+				w.WriteHeader(code)
 				io.WriteString(w, text)
 				return
 			}
