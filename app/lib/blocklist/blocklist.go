@@ -147,6 +147,8 @@ func (b Blocklist) Check(r *http.Request) error {
 	return nil
 }
 
+var reWellKnown = regexp.MustCompile(`^/.well-known/`)
+
 // CheckAFter should be run after the normal http handler returned.
 func (b Blocklist) CheckAfter(w http.ResponseWriter, r *http.Request, status int, err error) (handled bool) {
 	if err != nil {
@@ -159,8 +161,13 @@ func (b Blocklist) CheckAfter(w http.ResponseWriter, r *http.Request, status int
 	}
 
 	uri := r.URL.Path
+	if reWellKnown.MatchString(uri) {
+		// Always allow all `/.well-known/...`, as blocking those requests can have
+		// bad consequences
+		return false
+	}
 	for _, rule := range b.uri {
-		if rule.v.MatchString(r.URL.Path) {
+		if rule.v.MatchString(uri) {
 			b.writeError(r.Context(), w, matchError{
 				ruleType: "uri",
 				rule:     rule.raw,
