@@ -11,8 +11,10 @@ ip:
 ua:
 # - ".*foo.*"  # Any user-agent with "foo" in it will match
 
+# Only matches URIs that would otherwise generate 404 errors.
 uri:
 # - "\.php$" # Any request path ends with ".php" will match
+# - "/\\." # Any request path has "/." in it will match
 
 # By default, we use http status code 403 for blocked requests.
 # code: 403

@@ -14,8 +14,6 @@ import (
 
 	"go.yhsif.com/ctxslog"
 	"gopkg.in/yaml.v3"
-
-	"go.yhsif.com/pandablog/app/lib/envdetect"
 )
 
 type withRaw[T any] struct {
@@ -47,9 +45,9 @@ type Blocklist struct {
 	UA  []string `yaml:"ua"`
 	URI []string `yaml:"uri"`
 
-	ipPrefixes []withRaw[netip.Prefix]
-	ua         []withRaw[*regexp.Regexp]
-	uri        []withRaw[*regexp.Regexp]
+	ipPrefixes []withRaw[netip.Prefix]   `yaml:"-"`
+	ua         []withRaw[*regexp.Regexp] `yaml:"-"`
+	uri        []withRaw[*regexp.Regexp] `yaml:"-"`
 }
 
 // ParseYAML creates a Blocklist from yaml config.
@@ -126,10 +124,6 @@ func (b *Blocklist) Parse(ctx context.Context) {
 
 // Check returns an error if the request matches the blocklist.
 func (b Blocklist) Check(r *http.Request) error {
-	if envdetect.RunningLocalDev() {
-		return nil
-	}
-
 	ip := ctxslog.GCPRealIP(r)
 	for _, rule := range b.ipPrefixes {
 		if rule.v.Contains(ip) {
@@ -137,16 +131,6 @@ func (b Blocklist) Check(r *http.Request) error {
 				ruleType: "ip",
 				rule:     rule.raw,
 				matched:  ip.String(),
-			}
-		}
-	}
-	uri := r.URL.Path
-	for _, rule := range b.uri {
-		if rule.v.MatchString(r.URL.Path) {
-			return matchError{
-				ruleType: "uri",
-				rule:     rule.raw,
-				matched:  uri,
 			}
 		}
 	}
@@ -163,36 +147,64 @@ func (b Blocklist) Check(r *http.Request) error {
 	return nil
 }
 
+// CheckAFter should be run after the normal http handler returned.
+func (b Blocklist) CheckAfter(w http.ResponseWriter, r *http.Request, status int, err error) (handled bool) {
+	if err != nil {
+		return false
+	}
+
+	// We only want to handle 404s here
+	if status != 404 {
+		return false
+	}
+
+	uri := r.URL.Path
+	for _, rule := range b.uri {
+		if rule.v.MatchString(r.URL.Path) {
+			b.writeError(r.Context(), w, matchError{
+				ruleType: "uri",
+				rule:     rule.raw,
+				matched:  uri,
+			})
+			return true
+		}
+	}
+	return false
+}
+
 // Middleware provides a HTTP middleware based on the configured blocklist.
 func (b Blocklist) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/robots.txt" { // still allow them to access robots.txt
 			if err := b.Check(r); err != nil {
-				ctx := r.Context()
-				var sleep time.Duration
-				if b.Sleep > 0 {
-					// Sleep for b.Sleep +- 10%
-					sleep = time.Duration(float64(b.Sleep) * (1 - (rand.Float64()*2-1)*0.1))
-					ctx = ctxslog.Attach(ctx, "sleep", sleep)
-				}
-				code := http.StatusForbidden
-				if b.Code != nil {
-					code = *b.Code
-				}
-				text := http.StatusText(code)
-				if b.Message != nil {
-					text = *b.Message
-				}
-				slog.InfoContext(ctx, "blocking request", "err", err, "code", code, "text", text)
-				if sleep > 0 {
-					time.Sleep(sleep)
-				}
-				w.WriteHeader(code)
-				io.WriteString(w, text)
+				b.writeError(r.Context(), w, err)
 				return
 			}
 		}
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+func (b Blocklist) writeError(ctx context.Context, w http.ResponseWriter, err error) {
+	var sleep time.Duration
+	if b.Sleep > 0 {
+		// Sleep for b.Sleep +- 10%
+		sleep = time.Duration(float64(b.Sleep) * (1 - (rand.Float64()*2-1)*0.1))
+		ctx = ctxslog.Attach(ctx, "sleep", sleep)
+	}
+	code := http.StatusForbidden
+	if b.Code != nil {
+		code = *b.Code
+	}
+	text := http.StatusText(code)
+	if b.Message != nil {
+		text = *b.Message
+	}
+	slog.InfoContext(ctx, "blocking request", "err", err, "code", code, "text", text)
+	if sleep > 0 {
+		time.Sleep(sleep)
+	}
+	w.WriteHeader(code)
+	io.WriteString(w, text)
 }

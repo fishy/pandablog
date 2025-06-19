@@ -108,7 +108,7 @@ func Boot(ctx context.Context) (http.Handler, error) {
 	b := loadBlocklist(ctx)
 
 	// Setup the routes.
-	c, err := route.Register(storage, sess, tmpl)
+	c, err := route.Register(storage, sess, tmpl, b)
 	if err != nil {
 		return nil, err
 	}

@@ -8,6 +8,7 @@ import (
 // handler is a internal handler.
 type handler struct {
 	HandlerFunc
+
 	CustomServeHTTP func(w http.ResponseWriter, r *http.Request, status int, err error)
 }
 

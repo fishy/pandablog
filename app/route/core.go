@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strings"
 
+	"go.yhsif.com/pandablog/app/lib/blocklist"
 	"go.yhsif.com/pandablog/app/lib/datastorage"
 	"go.yhsif.com/pandablog/app/lib/htmltemplate"
 	"go.yhsif.com/pandablog/app/lib/router"
@@ -24,10 +25,10 @@ type Core struct {
 }
 
 // Register all routes.
-func Register(storage *datastorage.Storage, sess *websession.Session, tmpl *htmltemplate.Engine) (*Core, error) {
+func Register(storage *datastorage.Storage, sess *websession.Session, tmpl *htmltemplate.Engine, b blocklist.Blocklist) (*Core, error) {
 	// Create core app.
 	c := &Core{
-		Router:  setupRouter(tmpl),
+		Router:  setupRouter(tmpl, b),
 		Storage: storage,
 		Render:  tmpl,
 		Sess:    sess,
@@ -51,7 +52,7 @@ func Register(storage *datastorage.Storage, sess *websession.Session, tmpl *html
 	return c, nil
 }
 
-func setupRouter(tmpl *htmltemplate.Engine) *router.Mux {
+func setupRouter(tmpl *htmltemplate.Engine, b blocklist.Blocklist) *router.Mux {
 	// Set the handling of all responses.
 	customServeHTTP := func(w http.ResponseWriter, r *http.Request, status int, err error) {
 		// Handle only errors.
@@ -60,6 +61,9 @@ func setupRouter(tmpl *htmltemplate.Engine) *router.Mux {
 			vars["title"] = fmt.Sprint(status)
 			errTemplate := "400"
 			if status == 404 {
+				if b.CheckAfter(w, r, http.StatusNotFound, nil) {
+					return
+				}
 				errTemplate = "404"
 			}
 			status, err = tmpl.ErrorTemplate(w, r, "base", errTemplate, vars)
