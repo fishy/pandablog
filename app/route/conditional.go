@@ -29,6 +29,7 @@ func ifModifiedSince(r *http.Request) time.Time {
 		slog.WarnContext(
 			r.Context(),
 			"Invalid if-modified-since header",
+			"err", err,
 			"if-modified-since", v,
 		)
 		return time.Time{}
