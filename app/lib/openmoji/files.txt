@@ -91,6 +91,7 @@
 1F1E8-1F1F3.png
 1F1E8-1F1F4.png
 1F1E8-1F1F5.png
+1F1E8-1F1F6.png
 1F1E8-1F1F7.png
 1F1E8-1F1FA.png
 1F1E8-1F1FB.png
@@ -3488,6 +3489,8 @@
 1FA86.png
 1FA87.png
 1FA88.png
+1FA89.png
+1FA8F.png
 1FA90.png
 1FA91.png
 1FA92.png
@@ -3534,6 +3537,7 @@
 1FABB.png
 1FABC.png
 1FABD.png
+1FABE.png
 1FABF.png
 1FAC0.png
 1FAC1.png
@@ -3556,6 +3560,7 @@
 1FAC5-1F3FE.png
 1FAC5-1F3FF.png
 1FAC5.png
+1FAC6.png
 1FACE.png
 1FACF.png
 1FAD0.png
@@ -3577,6 +3582,8 @@
 1FAD9.png
 1FADA.png
 1FADB.png
+1FADC.png
+1FADF.png
 1FAE0.png
 1FAE1.png
 1FAE2.png
@@ -3586,6 +3593,7 @@
 1FAE6.png
 1FAE7.png
 1FAE8.png
+1FAE9.png
 1FAF0-1F3FB.png
 1FAF0-1F3FC.png
 1FAF0-1F3FD.png

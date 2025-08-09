@@ -17,11 +17,11 @@ type EmojiResources struct {
 }
 
 // The file list is coming from
-// https://github.com/hfg-gmuend/openmoji/releases/download/15.1.0/openmoji-72x72-color.zip
+// https://github.com/hfg-gmuend/openmoji/releases/download/16.0.0/openmoji-72x72-color.zip
 //
 // It can be updated like this:
 //
-//	curl -LO https://github.com/hfg-gmuend/openmoji/releases/download/15.1.0/openmoji-72x72-color.zip
+//	curl -LO https://github.com/hfg-gmuend/openmoji/releases/download/16.0.0/openmoji-72x72-color.zip
 //	mkdir tmp
 //	unzip openmoji-72x72-color.zip -d tmp/
 //	ls tmp/ > files.txt
@@ -41,8 +41,8 @@ var filesMap = func() map[string]struct{} {
 
 const (
 	pngMimeType      = "image/png"
-	pngTemplateLarge = "https://raw.githubusercontent.com/hfg-gmuend/openmoji/15.1.0/color/618x618/%s.png"
-	pngTemplateSmall = "https://raw.githubusercontent.com/hfg-gmuend/openmoji/15.1.0/color/72x72/%s.png"
+	pngTemplateLarge = "https://raw.githubusercontent.com/hfg-gmuend/openmoji/16.0.0/color/618x618/%s.png"
+	pngTemplateSmall = "https://raw.githubusercontent.com/hfg-gmuend/openmoji/16.0.0/color/72x72/%s.png"
 
 	svgMimeType      = "image/svg+xml"
 	svgTemplateLarge = "%s?emoji=%s&size=618px"
