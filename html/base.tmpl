@@ -25,9 +25,10 @@ en
             {{end}}
             <a href="/blog">Blog</a>
             {{if BridgyFedWeb}}
-            <div style="display:none;">
-              <a rel="me" href="https://{{BridgyFedWeb}}/r/{{SiteURL}}/" hidden="from-humans">Fediverse</a>
-            </div>
+            <link rel="me" href="https://{{BridgyFedWeb}}/r/{{SiteURL}}/"/>
+            {{end}}
+            {{if IndieLoginURI}}
+            <link rel="me authn" href="{{IndieLoginURI}}"/>
             {{end}}
         </nav>
     </header>

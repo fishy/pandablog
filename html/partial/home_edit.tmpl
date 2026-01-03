@@ -77,6 +77,11 @@
         <span class="helptext">Optional if you want verified link ✅ on <a href="https://fed.brid.gy/docs#mastodon-link-verification">Bridgy Fed</a> (ex. web.brid.gy).</span>
     </p>
     <p>
+        <label for="id_indie_login_uri">IndieLogin URI:</label>
+        <input type="text" name="indie_login_uri" value="{{.indie_login_uri}}" id="id_indie_login_uri">
+        <span class="helptext">Optional if you want to use <a href="https://indielogin.com/setup">IndieLogin</a> with 3rd party WebMention handler, can be https or mailto URIs.</span>
+    </p>
+    <p>
         <label for="id_description">Site description:</label>
         <textarea name="pdescription" cols="40" rows="3" id="id_description">{{.pdescription}}</textarea>
     </p>

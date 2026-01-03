@@ -89,6 +89,9 @@ func FuncMap(
 	fm["BridgyFedWeb"] = func() string {
 		return site.BridgyFedWeb
 	}
+	fm["IndieLoginURI"] = func() string {
+		return site.IndieLoginURI
+	}
 	fm["MFAEnabled"] = func() bool {
 		return len(os.Getenv("PBB_MFA_KEY")) > 0
 	}
