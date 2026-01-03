@@ -76,6 +76,7 @@ func (c *HomePost) edit(w http.ResponseWriter, r *http.Request) (status int, err
 	vars["cactus"] = site.CactusSiteName
 	vars["bridgy_fed_domain"] = site.BridgyFedDomain
 	vars["bridgy_fed_web"] = site.BridgyFedWeb
+	vars["webmention_domain"] = site.WebmentionDomain
 	vars["indie_login_uri"] = site.IndieLoginURI
 	vars["footer"] = site.FooterMarkdown()
 	vars["isodate"] = site.ISODate
@@ -113,6 +114,7 @@ func (c *HomePost) update(w http.ResponseWriter, r *http.Request) (status int, e
 	site.CactusSiteName = r.FormValue("cactus")
 	site.BridgyFedDomain = r.FormValue("bridgy_fed_domain")
 	site.BridgyFedWeb = r.FormValue("bridgy_fed_web")
+	site.WebmentionDomain = r.FormValue("webmention_domain")
 	site.IndieLoginURI = r.FormValue("indie_login_uri")
 	site.ISODate = (r.FormValue("isodate") == "on")
 	site.Lang = r.FormValue("lang")

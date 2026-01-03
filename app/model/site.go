@@ -41,7 +41,8 @@ type Site struct {
 	BridgyFedDomain string `json:"bridgyFedDomain"`
 	BridgyFedWeb    string `json:"bridgyFedWeb"`
 
-	IndieLoginURI string `json:"indieLoginURI,omitempty"`
+	WebmentionDomain string `json:"webmentionDomain,omitempty"`
+	IndieLoginURI    string `json:"indieLoginURI,omitempty"`
 
 	Footer *string `json:"footer"`
 

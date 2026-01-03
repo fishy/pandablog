@@ -89,6 +89,9 @@ func FuncMap(
 	fm["BridgyFedWeb"] = func() string {
 		return site.BridgyFedWeb
 	}
+	fm["WebmentionDomain"] = func() string {
+		return site.WebmentionDomain
+	}
 	fm["IndieLoginURI"] = func() string {
 		return site.IndieLoginURI
 	}

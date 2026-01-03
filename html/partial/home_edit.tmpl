@@ -77,9 +77,14 @@
         <span class="helptext">Optional if you want verified link ✅ on <a href="https://fed.brid.gy/docs#mastodon-link-verification">Bridgy Fed</a> (ex. web.brid.gy).</span>
     </p>
     <p>
+        <label for="id_webmention_domain">Webmention Domain:</label>
+        <input type="text" name="webmention_domain" value="{{.webmention_domain}}" id="id_webmention_domain">
+        <span class="helptext">Domain used for <a href="https://indieweb.org/webmention.io">webmention.io</a> for comments (disables Disqus and Cactus).</span>
+    </p>
+    <p>
         <label for="id_indie_login_uri">IndieLogin URI:</label>
         <input type="text" name="indie_login_uri" value="{{.indie_login_uri}}" id="id_indie_login_uri">
-        <span class="helptext">Optional if you want to use <a href="https://indielogin.com/setup">IndieLogin</a> with 3rd party WebMention handler, can be https or mailto URIs.</span>
+        <span class="helptext"><a href="https://indielogin.com/setup">IndieLogin</a> authentication used by webmention.io, can be https or mailto URIs.</span>
     </p>
     <p>
         <label for="id_description">Site description:</label>
