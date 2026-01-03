@@ -77,22 +77,42 @@ en
         </div>
         {{end}}
 
-        {{if and .pubdate DisqusID}}
-        <div id="disqus_thread"></div>
-        {{end}}
-        {{if and .pubdate CactusSiteName}}
-        <script type="text/javascript" src="/assets/cactus/v0.13.0.js"></script>
-        <link rel="stylesheet" href="/assets/cactus/v0.13.0.css" type="text/css">
-        <div id="comment-section"></div>
-        <script>
-        initComments({
-          node: document.getElementById("comment-section"),
-          defaultHomeserverUrl: "https://matrix.cactus.chat:8448",
-          serverName: "cactus.chat",
-          siteName: "{{CactusSiteName}}",
-          commentSectionId: "{{.posturl}}"
-        })
-        </script>
+        {{if .pubdate}}
+          {{if WebmentionDomain}}
+          <div id="webmentions"></div>
+          <script src="{{"/assets/webmention.js/webmention.min.js" | AssetStamp}}" async></script>
+          {{else}}
+            {{if DisqusID}}
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_config = function () {
+                    this.page.url = '{{SiteURL}}/{{.posturl}}';
+                    this.page.identifier = '{{.id}}';
+                };
+                (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://{{DisqusID}}.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            {{else}}
+              {{if CactusSiteName}}
+              <script type="text/javascript" src="/assets/cactus/v0.13.0.js"></script>
+              <link rel="stylesheet" href="/assets/cactus/v0.13.0.css" type="text/css">
+              <div id="comment-section"></div>
+              <script>
+              initComments({
+                node: document.getElementById("comment-section"),
+                defaultHomeserverUrl: "https://matrix.cactus.chat:8448",
+                serverName: "cactus.chat",
+                siteName: "{{CactusSiteName}}",
+                commentSectionId: "{{.posturl}}"
+              })
+              </script>
+              {{end}}
+            {{end}}
+          {{end}}
         {{end}}
     </main>
     <footer>
@@ -107,20 +127,6 @@ en
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', '{{GoogleAnalyticsID}}');
-    </script>
-    {{end}}
-    {{if and .pubdate DisqusID}}
-    <script type="text/javascript">
-        var disqus_config = function () {
-            this.page.url = '{{SiteURL}}/{{.posturl}}';
-            this.page.identifier = '{{.id}}';
-        };
-        (function() {
-        var d = document, s = d.createElement('script');
-        s.src = 'https://{{DisqusID}}.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-        })();
     </script>
     {{end}}
     {{if EnablePrism}}

@@ -195,3 +195,11 @@ ul.blog-posts li a:visited {
         color: #aaa;
     }
 }
+
+#webmentions img { max-height: 1.2em; margin-right: -1ex; }
+
+#webmentions h2 {
+    font-size: medium;
+    margin: 0;
+    padding: 2px;
+}
