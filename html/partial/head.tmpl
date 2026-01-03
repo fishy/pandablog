@@ -16,6 +16,9 @@
     {{if EnablePrism}}<link rel="stylesheet" href="{{"/assets/css/prism-vsc-dark-plus.css" | AssetStamp}}">{{end}}
     <link rel="alternate" href="/rss.xml" type="application/rss+xml" title="{{SiteTitle}}">
     {{if .query}}<link rel="alternate" href="/rss.xml?q={{.query}}" type="application/rss+xml" title="{{SiteTitle}} - #{{.query}}">{{end}}
+    {{if WebmentionDomain}}<link rel="webmention" href="https://webmention.io/{{WebmentionDomain}}/webmention" />{{end}}
+    {{if BridgyFedWeb}}<link rel="me" href="https://{{BridgyFedWeb}}/r/{{SiteURL}}/"/>{{end}}
+    {{if IndieLoginURI}}<link rel="me authn" href="{{IndieLoginURI}}"/>{{end}}
     <meta name="author" property="author" content="{{SiteAuthor}}" />
     <meta name="description" content="{{if .metadescription}}{{.metadescription}}{{else}}{{SiteDescription}}{{end}}" />
     {{if .fedicreator}}<meta name="fediverse:creator" content="{{.fedicreator}}" />{{end}}

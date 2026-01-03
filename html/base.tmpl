@@ -24,15 +24,6 @@ en
             <a href="/{{.URL}}">{{.Title}}</a>
             {{end}}
             <a href="/blog">Blog</a>
-            {{if BridgyFedWeb}}
-            <link rel="me" href="https://{{BridgyFedWeb}}/r/{{SiteURL}}/"/>
-            {{end}}
-            {{if WebmentionDomain}}
-            <link rel="webmention" href="https://webmention.io/{{WebmentionDomain}}/webmention" />
-            {{end}}
-            {{if IndieLoginURI}}
-            <link rel="me authn" href="{{IndieLoginURI}}"/>
-            {{end}}
         </nav>
     </header>
 
