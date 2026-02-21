@@ -77,8 +77,7 @@ func (t TagList) Split(s string) TagList {
 	ts := time.Now()
 
 	arrTags := make([]Tag, 0)
-	tags := strings.Split(trimmed, ",")
-	for _, v := range tags {
+	for v := range strings.SplitSeq(trimmed, ",") {
 		arrTags = append(arrTags, Tag{
 			Name:      strings.TrimSpace(v),
 			Timestamp: ts,
