@@ -20,7 +20,7 @@ You can see an active website using this stack [here](https://www.josephspurrier
 
 ## Quickstart on Local
 
-- Clone the repository: `git clone https://github.com/fishy/pandablog`
+- Clone the repository: `git clone https://git.yhsif.com/fishy/pandablog.git`
 - Create a new file called `.env` in the root of the repository with this content:
 
 ```bash
