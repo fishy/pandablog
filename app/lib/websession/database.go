@@ -1,7 +1,8 @@
 package websession
 
 import (
-	"encoding/json"
+	"encoding/json/jsontext"
+	"encoding/json/v2"
 	"time"
 
 	"go.yhsif.com/pandablog/app/lib/envdetect"
@@ -50,7 +51,7 @@ func (sd *SessionDatabase) Save(ss Sessionstorer, en Encrypter) error {
 
 	if envdetect.RunningLocalDev() {
 		// Indent so the data is easy to read.
-		b, err = json.MarshalIndent(sd, "", "    ")
+		b, err = json.Marshal(sd, jsontext.WithIndent("  "))
 	} else {
 		b, err = json.Marshal(sd)
 	}

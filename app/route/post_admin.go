@@ -8,8 +8,8 @@ import (
 	"net/url"
 	"strings"
 	"time"
+	"uuid"
 
-	"github.com/google/uuid"
 	"github.com/matryer/way"
 
 	"go.yhsif.com/pandablog/app/lib/envdetect"
@@ -65,11 +65,7 @@ func (c *AdminPost) store(w http.ResponseWriter, r *http.Request) (status int, e
 		return http.StatusInternalServerError, err
 	}
 
-	id, err := uuid.NewRandom()
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-
+	id := uuid.NewV4()
 	r.ParseForm()
 
 	// CSRF protection.

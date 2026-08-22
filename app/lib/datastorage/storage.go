@@ -2,7 +2,8 @@ package datastorage
 
 import (
 	"context"
-	"encoding/json"
+	"encoding/json/jsontext"
+	"encoding/json/v2"
 	"os"
 	"sync/atomic"
 	"time"
@@ -98,7 +99,7 @@ func (s *Storage) Save(site *model.Site) error {
 
 	if envdetect.RunningLocalDev() {
 		// Indent so the data is easy to read.
-		b, err = json.MarshalIndent(site, "", "    ")
+		b, err = json.Marshal(site, jsontext.WithIndent("  "))
 	} else {
 		b, err = json.Marshal(site)
 	}
