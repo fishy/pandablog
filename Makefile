@@ -44,7 +44,7 @@ gcp-init:
 .PHONY: gcp-push
 gcp-push: test
 	@echo Pushing to Google Cloud Run.
-	$(gcloud) builds submit --tag $(docker_image)
+	$(gcloud) builds submit --worker-release=regular --tag=$(docker_image)
 	$(gcloud) run deploy --image $(docker_image) \
 		--platform managed \
 		--allow-unauthenticated \
